@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class Pago extends Model
 {
     protected $fillable = [
+        'tipo_receptor',
         'trabajador_id',
+        'socio_id',
         'fecha',
         'subtotal',
         'bonos',
@@ -20,7 +22,8 @@ class Pago extends Model
         'tipo_cambio',
         'observacion',
         'metodo_pago',
-        'entregado_por'
+        'entregado_por',
+        'user_id',
     ];
 
     protected $casts = [
@@ -31,6 +34,16 @@ class Pago extends Model
     public function trabajador()
     {
         return $this->belongsTo(Trabajador::class);
+    }
+
+    public function socio()
+    {
+        return $this->belongsTo(Socio::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function trabajos()

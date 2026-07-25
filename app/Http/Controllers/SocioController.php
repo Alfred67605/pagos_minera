@@ -2,21 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Trabajador;
+use App\Models\Socio;
 use App\Models\Bocamina;
 use Illuminate\Http\Request;
 
-class TrabajadorController extends Controller
+class SocioController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Trabajador::with('bocamina');
+        $query = Socio::with('bocamina');
 
         if ($request->filled('buscar')) {
             $buscar = $request->buscar;
             $query->where(function($q) use ($buscar) {
                 $q->where('nombre', 'like', "%{$buscar}%")
-                  ->orWhere('ci', 'like', "%{$buscar}%");
+                  ->orWhere('ci', 'like', "%{$buscar}%")
+                  ->orWhere('codigo', 'like', "%{$buscar}%");
             });
         }
 
@@ -24,36 +25,29 @@ class TrabajadorController extends Controller
             $query->where('bocamina_id', $request->bocamina_id);
         }
 
-        if ($request->filled('cargo')) {
-            $query->where('cargo', $request->cargo);
-        }
-
         if ($request->filled('estado')) {
             $query->where('estado', $request->estado);
         }
 
-        $trabajadores = $query->orderBy('nombre', 'asc')->get();
+        $socios = $query->orderBy('nombre', 'asc')->get();
         $bocaminas = Bocamina::orderBy('nombre', 'asc')->get();
 
-        return view('trabajadores.index', compact('trabajadores', 'bocaminas'));
+        return view('socios.index', compact('socios', 'bocaminas'));
     }
 
     public function store(Request $request)
     {
         $data = $request->validate([
-            'ci' => 'required|string|max:255|unique:trabajadores,ci',
+            'codigo' => 'required|string|max:50|unique:socios,codigo',
+            'ci' => 'required|string|max:20|unique:socios,ci',
             'nombre' => [
                 'required',
                 'string',
                 'max:255',
                 'regex:/^[A-ZÁÉÍÓÚÑ][a-zzáéíóúñA-ZÁÉÍÓÚÑ\']*(?:\s+[A-ZÁÉÍÓÚÑ][a-zzáéíóúñA-ZÁÉÍÓÚÑ\']*)*$/u'
             ],
-            'cargo' => 'required|string|in:trabajador_bocamina,sereno,chofer,personal_admin',
-            'fecha_ingreso' => 'nullable|date',
-            'modalidad_pago' => 'required|string|in:por_produccion,sueldo_fijo',
-            'sueldo_base' => 'nullable|numeric|min:0',
             'telefono' => 'nullable|numeric|digits:8',
-            'bocamina_id' => 'required|exists:bocaminas,id',
+            'bocamina_id' => 'nullable|exists:bocaminas,id',
             'estado' => 'required|in:activo,inactivo',
             'observaciones' => 'nullable|string',
         ], [
@@ -62,27 +56,24 @@ class TrabajadorController extends Controller
             'telefono.numeric' => 'El teléfono solo debe contener números.',
         ]);
 
-        Trabajador::create($data);
+        Socio::create($data);
 
-        return redirect()->route('trabajadores.index')->with('success', 'Personal registrado exitosamente.');
+        return redirect()->route('socios.index')->with('success', 'Socio registrado exitosamente.');
     }
 
-    public function update(Request $request, Trabajador $trabajador)
+    public function update(Request $request, Socio $socio)
     {
         $data = $request->validate([
-            'ci' => 'required|string|max:255|unique:trabajadores,ci,' . $trabajador->id,
+            'codigo' => 'required|string|max:50|unique:socios,codigo,' . $socio->id,
+            'ci' => 'required|string|max:20|unique:socios,ci,' . $socio->id,
             'nombre' => [
                 'required',
                 'string',
                 'max:255',
                 'regex:/^[A-ZÁÉÍÓÚÑ][a-zzáéíóúñA-ZÁÉÍÓÚÑ\']*(?:\s+[A-ZÁÉÍÓÚÑ][a-zzáéíóúñA-ZÁÉÍÓÚÑ\']*)*$/u'
             ],
-            'cargo' => 'required|string|in:trabajador_bocamina,sereno,chofer,personal_admin',
-            'fecha_ingreso' => 'nullable|date',
-            'modalidad_pago' => 'required|string|in:por_produccion,sueldo_fijo',
-            'sueldo_base' => 'nullable|numeric|min:0',
             'telefono' => 'nullable|numeric|digits:8',
-            'bocamina_id' => 'required|exists:bocaminas,id',
+            'bocamina_id' => 'nullable|exists:bocaminas,id',
             'estado' => 'required|in:activo,inactivo',
             'observaciones' => 'nullable|string',
         ], [
@@ -91,20 +82,19 @@ class TrabajadorController extends Controller
             'telefono.numeric' => 'El teléfono solo debe contener números.',
         ]);
 
-        $trabajador->update($data);
+        $socio->update($data);
 
-        return redirect()->route('trabajadores.index')->with('success', 'Personal actualizado exitosamente.');
+        return redirect()->route('socios.index')->with('success', 'Socio actualizado exitosamente.');
     }
 
-    public function destroy(Trabajador $trabajador)
+    public function destroy(Socio $socio)
     {
-        // Block delete if they have payments, advances, or jobs linked
-        if ($trabajador->trabajos()->exists() || $trabajador->anticipos()->exists() || $trabajador->pagos()->exists()) {
-            return back()->withErrors(['error' => 'No se puede eliminar el trabajador porque tiene registros de trabajos, anticipos o pagos asociados.']);
+        if ($socio->anticipos()->exists() || $socio->pagos()->exists() || $socio->ventas()->exists()) {
+            return back()->withErrors(['error' => 'No se puede eliminar el socio porque tiene registros de anticipos, pagos o ventas asociados.']);
         }
 
-        $trabajador->delete();
+        $socio->delete();
 
-        return redirect()->route('trabajadores.index')->with('success', 'Trabajador eliminado exitosamente.');
+        return redirect()->route('socios.index')->with('success', 'Socio eliminado exitosamente.');
     }
 }

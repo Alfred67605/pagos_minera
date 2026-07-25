@@ -8,7 +8,18 @@ class Trabajador extends Model
 {
     protected $table = 'trabajadores';
 
-    protected $fillable = ['ci', 'nombre', 'telefono', 'bocamina_id', 'estado'];
+    protected $fillable = [
+        'ci',
+        'nombre',
+        'cargo',
+        'fecha_ingreso',
+        'modalidad_pago',
+        'sueldo_base',
+        'telefono',
+        'bocamina_id',
+        'estado',
+        'observaciones',
+    ];
 
     public function bocamina()
     {

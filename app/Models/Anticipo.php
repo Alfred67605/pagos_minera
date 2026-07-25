@@ -6,7 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class Anticipo extends Model
 {
-    protected $fillable = ['trabajador_id', 'fecha', 'monto', 'saldo', 'pagado'];
+    protected $fillable = [
+        'tipo_receptor',
+        'trabajador_id',
+        'socio_id',
+        'fecha',
+        'monto',
+        'saldo',
+        'pagado',
+        'motivo',
+        'user_id',
+    ];
 
     protected $casts = [
         'pagado' => 'boolean',
@@ -16,6 +26,16 @@ class Anticipo extends Model
     public function trabajador()
     {
         return $this->belongsTo(Trabajador::class);
+    }
+
+    public function socio()
+    {
+        return $this->belongsTo(Socio::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function pagos()

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Trabajadores')
+@section('title', 'Personal y Trabajadores')
 
 @section('content')
 <div x-data="{ 
@@ -9,9 +9,14 @@
     trabajadorId: null,
     ci: '', 
     nombre: '', 
+    cargo: 'trabajador_bocamina',
+    fecha_ingreso: '',
+    modalidad_pago: 'por_produccion',
+    sueldo_base: '0.00',
     telefono: '', 
     bocamina_id: '',
     estado: 'activo', 
+    observaciones: '',
     editActionUrl: '',
     
     isNombreValido() {
@@ -29,9 +34,14 @@
         this.trabajadorId = null;
         this.ci = '';
         this.nombre = '';
+        this.cargo = 'trabajador_bocamina';
+        this.fecha_ingreso = '{{ date('Y-m-d') }}';
+        this.modalidad_pago = 'por_produccion';
+        this.sueldo_base = '0.00';
         this.telefono = '';
         this.bocamina_id = '';
         this.estado = 'activo';
+        this.observaciones = '';
         this.openModal = true;
     },
     openEdit(trabajador) {
@@ -39,9 +49,14 @@
         this.trabajadorId = trabajador.id;
         this.ci = trabajador.ci;
         this.nombre = trabajador.nombre;
+        this.cargo = trabajador.cargo || 'trabajador_bocamina';
+        this.fecha_ingreso = trabajador.fecha_ingreso || '';
+        this.modalidad_pago = trabajador.modalidad_pago || 'por_produccion';
+        this.sueldo_base = trabajador.sueldo_base || '0.00';
         this.telefono = trabajador.telefono || '';
         this.bocamina_id = trabajador.bocamina_id;
         this.estado = trabajador.estado;
+        this.observaciones = trabajador.observaciones || '';
         this.editActionUrl = '/trabajadores/' + trabajador.id;
         this.openModal = true;
     }
@@ -50,28 +65,40 @@
     <!-- Header -->
     <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
         <div>
-            <h1 class="text-3xl font-bold tracking-tight text-slate-100">Registro de Trabajadores / Contratistas</h1>
-            <p class="text-sm text-slate-400 mt-1">Administra el personal de la empresa asignado a cada bocamina.</p>
+            <h1 class="text-3xl font-extrabold tracking-tight text-slate-100">Personal y Trabajadores</h1>
+            <p class="text-sm text-slate-300 mt-1">Administra a los trabajadores de bocamina, serenos, choferes y personal administrativo.</p>
         </div>
-        <button @click="openCreate()" class="btn-vibrant-amber inline-flex items-center justify-center px-4 py-2.5 rounded-lg text-sm font-bold shadow-lg self-start">
-            <i class="fa-solid fa-user-plus mr-2"></i> Nuevo Trabajador / Contratista
+        <button @click="openCreate()" class="btn-vibrant-cyan inline-flex items-center justify-center px-4 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-cyan-500/20 self-start">
+            <i class="fa-solid fa-user-plus mr-2"></i> Registrar Personal
         </button>
     </div>
 
     <!-- Filters Section -->
-    <div class="glass-card rounded-xl p-6 no-print">
-        <form action="{{ route('trabajadores.index') }}" method="GET" class="grid grid-cols-1 gap-4 sm:grid-cols-4 items-end">
+    <div class="glass-card rounded-2xl p-6 no-print">
+        <form action="{{ route('trabajadores.index') }}" method="GET" class="grid grid-cols-1 gap-4 sm:grid-cols-5 items-end">
             <div>
-                <label for="buscar" class="block text-xs font-semibold uppercase tracking-wider text-slate-400">Buscar por Nombre o CI</label>
+                <label for="buscar" class="block text-xs font-bold uppercase tracking-wider text-cyan-400">Nombre o C.I.</label>
                 <input type="text" name="buscar" id="buscar" value="{{ request('buscar') }}" 
-                       class="mt-1 block w-full px-3 py-2 bg-slate-900 border border-slate-700/80 rounded-lg text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-amber-500 focus:border-amber-500 text-sm"
+                       class="mt-1 block w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700/80 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500 text-sm"
                        placeholder="Ej. Juan Pérez / 483920">
             </div>
             
             <div>
-                <label for="bocamina_id_filter" class="block text-xs font-semibold uppercase tracking-wider text-slate-400">Filtrar por Bocamina</label>
+                <label for="cargo_filter" class="block text-xs font-bold uppercase tracking-wider text-cyan-400">Cargo / Función</label>
+                <select name="cargo" id="cargo_filter" 
+                        class="mt-1 block w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700/80 rounded-xl text-slate-100 focus:outline-none focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500 text-sm">
+                    <option value="">Todos los Cargos</option>
+                    <option value="trabajador_bocamina" {{ request('cargo') === 'trabajador_bocamina' ? 'selected' : '' }}>Trabajador de Bocamina</option>
+                    <option value="sereno" {{ request('cargo') === 'sereno' ? 'selected' : '' }}>Sereno</option>
+                    <option value="chofer" {{ request('cargo') === 'chofer' ? 'selected' : '' }}>Chofer</option>
+                    <option value="personal_admin" {{ request('cargo') === 'personal_admin' ? 'selected' : '' }}>Personal Admin</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="bocamina_id_filter" class="block text-xs font-bold uppercase tracking-wider text-cyan-400">Bocamina</label>
                 <select name="bocamina_id" id="bocamina_id_filter" 
-                        class="mt-1 block w-full px-3 py-2 bg-slate-900 border border-slate-700/80 rounded-lg text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500 focus:border-amber-500 text-sm">
+                        class="mt-1 block w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700/80 rounded-xl text-slate-100 focus:outline-none focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500 text-sm">
                     <option value="">Todas las Bocaminas</option>
                     @foreach($bocaminas as $bocamina)
                         <option value="{{ $bocamina->id }}" {{ request('bocamina_id') == $bocamina->id ? 'selected' : '' }}>{{ $bocamina->nombre }}</option>
@@ -80,9 +107,9 @@
             </div>
 
             <div>
-                <label for="estado_filter" class="block text-xs font-semibold uppercase tracking-wider text-slate-400">Estado</label>
+                <label for="estado_filter" class="block text-xs font-bold uppercase tracking-wider text-cyan-400">Estado</label>
                 <select name="estado" id="estado_filter" 
-                        class="mt-1 block w-full px-3 py-2 bg-slate-900 border border-slate-700/80 rounded-lg text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500 focus:border-amber-500 text-sm">
+                        class="mt-1 block w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700/80 rounded-xl text-slate-100 focus:outline-none focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500 text-sm">
                     <option value="">Todos los Estados</option>
                     <option value="activo" {{ request('estado') === 'activo' ? 'selected' : '' }}>Activo</option>
                     <option value="inactivo" {{ request('estado') === 'inactivo' ? 'selected' : '' }}>Inactivo</option>
@@ -90,7 +117,7 @@
             </div>
 
             <div class="flex space-x-2">
-                <button type="submit" class="btn-vibrant-warm flex-1 inline-flex items-center justify-center px-4 py-2 text-sm font-bold rounded-lg shadow-lg">
+                <button type="submit" class="btn-vibrant-cyan flex-1 inline-flex items-center justify-center px-4 py-2.5 text-sm font-bold rounded-xl shadow-lg">
                     <i class="fa-solid fa-magnifying-glass mr-2"></i> Filtrar
                 </button>
                 <a href="{{ route('trabajadores.index') }}" class="inline-flex items-center justify-center px-3 py-2 bg-slate-900 border border-slate-800 hover:bg-slate-800 text-sm font-medium text-slate-400 rounded-lg transition duration-150" title="Limpiar Filtros">
@@ -108,8 +135,9 @@
                     <tr class="text-left text-xs font-semibold text-slate-400 uppercase tracking-wider bg-slate-900/40">
                         <th class="px-6 py-4 font-semibold">C.I.</th>
                         <th class="px-6 py-4 font-semibold">Nombre Completo</th>
-                        <th class="px-6 py-4 font-semibold">Teléfono</th>
-                        <th class="px-6 py-4 font-semibold">Bocamina Asignada</th>
+                        <th class="px-6 py-4 font-semibold">Cargo / Función</th>
+                        <th class="px-6 py-4 font-semibold">Modalidad de Pago</th>
+                        <th class="px-6 py-4 font-semibold">Bocamina</th>
                         <th class="px-6 py-4 font-semibold">Estado</th>
                         <th class="px-6 py-4 font-semibold no-print">Acciones</th>
                     </tr>
@@ -118,8 +146,33 @@
                     @forelse($trabajadores as $trabajador)
                         <tr class="hover:bg-slate-900/10 transition duration-150">
                             <td class="px-6 py-4 font-mono font-medium text-slate-200">{{ $trabajador->ci }}</td>
-                            <td class="px-6 py-4 font-medium text-slate-100">{{ $trabajador->nombre }}</td>
-                            <td class="px-6 py-4 font-mono">{{ $trabajador->telefono ?: '-' }}</td>
+                            <td class="px-6 py-4 font-medium text-slate-100">
+                                {{ $trabajador->nombre }}
+                                @if($trabajador->telefono)
+                                    <span class="block text-xs text-slate-450 font-mono"><i class="fa-solid fa-phone text-[10px] mr-1"></i>{{ $trabajador->telefono }}</span>
+                                @endif
+                            </td>
+                            <td class="px-6 py-4">
+                                @php
+                                    $cargosMap = [
+                                        'trabajador_bocamina' => ['label' => 'Trabajador Bocamina', 'icon' => 'fa-hammer', 'color' => 'bg-amber-500/10 text-amber-400 border-amber-500/30'],
+                                        'sereno' => ['label' => 'Sereno / Guardia', 'icon' => 'fa-shield-halved', 'color' => 'bg-indigo-500/10 text-indigo-400 border-indigo-500/30'],
+                                        'chofer' => ['label' => 'Chofer', 'icon' => 'fa-truck-front', 'color' => 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30'],
+                                        'personal_admin' => ['label' => 'Personal Admin', 'icon' => 'fa-user-gear', 'color' => 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'],
+                                    ];
+                                    $c = $cargosMap[$trabajador->cargo] ?? ['label' => $trabajador->cargo, 'icon' => 'fa-user', 'color' => 'bg-slate-800 text-slate-300 border-slate-700'];
+                                @endphp
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border {{ $c['color'] }}">
+                                    <i class="fa-solid {{ $c['icon'] }} mr-1.5"></i> {{ $c['label'] }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4">
+                                @if($trabajador->modalidad_pago === 'sueldo_fijo')
+                                    <span class="text-xs font-semibold text-emerald-400">Sueldo Fijo: Bs. {{ number_format($trabajador->sueldo_base, 2) }}</span>
+                                @else
+                                    <span class="text-xs font-semibold text-amber-400">Por Producción / Contrato</span>
+                                @endif
+                            </td>
                             <td class="px-6 py-4">
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-800 text-slate-300 border border-slate-700">
                                     <i class="fa-solid fa-mountain mr-1.5 text-amber-500"></i> {{ $trabajador->bocamina->nombre }}
@@ -135,7 +188,7 @@
                                     <button @click="openEdit({{ $trabajador }})" class="p-2 rounded-lg bg-slate-800/80 hover:bg-amber-500/20 text-slate-300 hover:text-amber-400 border border-slate-700/60 hover:border-amber-500/40 transition-all duration-300 hover:scale-105 active:scale-95 shadow-sm" title="Editar">
                                         <i class="fa-solid fa-pen-to-square text-xs"></i>
                                     </button>
-                                    <form action="{{ route('trabajadores.destroy', $trabajador->id) }}" method="POST" class="inline" onsubmit="return confirm('¿Estás seguro de eliminar este trabajador?')">
+                                    <form action="{{ route('trabajadores.destroy', $trabajador->id) }}" method="POST" class="inline" onsubmit="return confirm('¿Estás seguro de eliminar este registro?')">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="p-2 rounded-lg bg-slate-800/80 hover:bg-red-500/20 text-slate-300 hover:text-red-400 border border-slate-700/60 hover:border-red-500/40 transition-all duration-300 hover:scale-105 active:scale-95 shadow-sm" title="Eliminar">
@@ -147,9 +200,9 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-6 py-12 text-center text-slate-500">
+                            <td colspan="7" class="px-6 py-12 text-center text-slate-500">
                                 <i class="fa-solid fa-user-slash text-4xl mb-3 block text-slate-600"></i>
-                                No se encontraron trabajadores.
+                                No se encontraron registros de personal.
                             </td>
                         </tr>
                     @endforelse
@@ -160,10 +213,10 @@
 
     <!-- AlpineJS Modal (Create/Edit) -->
     <div x-show="openModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm" x-cloak>
-        <div @click.away="openModal = false" class="glass-card w-full max-w-md rounded-2xl overflow-hidden shadow-2xl border border-slate-800/80 relative">
+        <div @click.away="openModal = false" class="glass-card w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl border border-slate-800/80 relative">
             <!-- Modal Header -->
             <div class="px-6 py-4 border-b border-slate-800/80 flex items-center justify-between bg-slate-900/60">
-                <h3 class="text-lg font-bold text-slate-100" x-text="editMode ? 'Editar Trabajador / Contratista' : 'Nuevo Trabajador / Contratista'"></h3>
+                <h3 class="text-lg font-bold text-slate-100" x-text="editMode ? 'Editar Personal' : 'Nuevo Registro de Personal'"></h3>
                 <button @click="openModal = false" class="text-slate-400 hover:text-slate-200">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
@@ -177,51 +230,97 @@
                 </template>
 
                 <div class="p-6 space-y-4">
-                    <div>
-                        <label for="modal_ci" class="block text-sm font-medium text-slate-300">Cédula de Identidad (C.I.)</label>
-                        <input id="modal_ci" name="ci" type="text" required x-model="ci"
-                               class="mt-1 block w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500 focus:border-amber-500 text-sm font-mono"
-                               placeholder="Ej. 1029384-LP">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label for="modal_ci" class="block text-sm font-medium text-slate-300">C.I. / Documento</label>
+                            <input id="modal_ci" name="ci" type="text" required x-model="ci"
+                                   class="mt-1 block w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500 focus:border-amber-500 text-sm font-mono"
+                                   placeholder="Ej. 1029384-LP">
+                        </div>
+                        <div>
+                            <label for="modal_telefono" class="block text-sm font-medium text-slate-300">Teléfono (Opcional)</label>
+                            <input id="modal_telefono" name="telefono" type="text" x-model="telefono"
+                                   @input="telefono = telefono.replace(/[^0-9]/g, '')"
+                                   maxlength="8"
+                                   class="mt-1 block w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500 focus:border-amber-500 text-sm font-mono"
+                                   placeholder="Ej. 71234567">
+                        </div>
                     </div>
+
                     <div>
                         <label for="modal_nombre" class="block text-sm font-medium text-slate-300">Nombre Completo</label>
                         <input id="modal_nombre" name="nombre" type="text" required x-model="nombre"
                                class="mt-1 block w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500 focus:border-amber-500 text-sm"
                                placeholder="Ej. Juan Carlos Pérez">
-                        <span class="text-[10px] text-slate-450 block mt-1"><i class="fa-solid fa-info-circle mr-1"></i> Cada nombre/apellido debe iniciar con <strong>MAYÚSCULA</strong> (Ej. Juan Carlos Pérez).</span>
+                        <span class="text-[10px] text-slate-450 block mt-1"><i class="fa-solid fa-info-circle mr-1"></i> Cada nombre/apellido debe iniciar con <strong>MAYÚSCULA</strong>.</span>
                         <div x-show="nombre && !isNombreValido()" class="text-red-400 text-[10px] mt-1 font-semibold flex items-center" x-cloak>
                             <i class="fa-solid fa-circle-xmark mr-1"></i> Cada palabra debe comenzar con mayúscula.
                         </div>
                     </div>
-                    <div>
-                        <label for="modal_telefono" class="block text-sm font-medium text-slate-300">Teléfono / Celular (Opcional)</label>
-                        <input id="modal_telefono" name="telefono" type="text" x-model="telefono"
-                               @input="telefono = telefono.replace(/[^0-9]/g, '')"
-                               maxlength="8"
-                               class="mt-1 block w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500 focus:border-amber-500 text-sm font-mono"
-                               placeholder="Ej. 71234567">
-                        <span class="text-[10px] text-slate-450 block mt-1"><i class="fa-solid fa-info-circle mr-1"></i> Solo números, exactamente 8 dígitos.</span>
-                        <div x-show="telefono && !isTelefonoValido()" class="text-red-400 text-[10px] mt-1 font-semibold flex items-center" x-cloak>
-                            <i class="fa-solid fa-circle-xmark mr-1"></i> Debe tener exactamente 8 números.
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label for="modal_cargo" class="block text-sm font-medium text-slate-300">Cargo / Función</label>
+                            <select id="modal_cargo" name="cargo" required x-model="cargo"
+                                    class="mt-1 block w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500 focus:border-amber-500 text-sm">
+                                <option value="trabajador_bocamina">Trabajador de Bocamina</option>
+                                <option value="sereno">Sereno / Guardia</option>
+                                <option value="chofer">Chofer</option>
+                                <option value="personal_admin">Personal Administrativo</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="modal_modalidad_pago" class="block text-sm font-medium text-slate-300">Modalidad de Pago</label>
+                            <select id="modal_modalidad_pago" name="modalidad_pago" required x-model="modalidad_pago"
+                                    class="mt-1 block w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500 focus:border-amber-500 text-sm">
+                                <option value="por_produccion">Por Producción / Contrato</option>
+                                <option value="sueldo_fijo">Sueldo Fijo Mensual</option>
+                            </select>
                         </div>
                     </div>
-                    <div>
-                        <label for="modal_bocamina" class="block text-sm font-medium text-slate-300">Bocamina Asignada</label>
-                        <select id="modal_bocamina" name="bocamina_id" required x-model="bocamina_id"
-                                class="mt-1 block w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500 focus:border-amber-500 text-sm">
-                            <option value="">Seleccione una bocamina...</option>
-                            @foreach($bocaminas as $bocamina)
-                                <option value="{{ $bocamina->id }}">{{ $bocamina->nombre }}</option>
-                            @endforeach
-                        </select>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div x-show="modalidad_pago === 'sueldo_fijo'">
+                            <label for="modal_sueldo_base" class="block text-sm font-medium text-slate-300">Sueldo Base (Bs.)</label>
+                            <input id="modal_sueldo_base" name="sueldo_base" type="number" step="0.01" min="0" x-model="sueldo_base"
+                                   class="mt-1 block w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500 focus:border-amber-500 text-sm font-mono"
+                                   placeholder="2500.00">
+                        </div>
+
+                        <div>
+                            <label for="modal_fecha_ingreso" class="block text-sm font-medium text-slate-300">Fecha de Ingreso</label>
+                            <input id="modal_fecha_ingreso" name="fecha_ingreso" type="date" x-model="fecha_ingreso"
+                                   class="mt-1 block w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500 focus:border-amber-500 text-sm">
+                        </div>
                     </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label for="modal_bocamina" class="block text-sm font-medium text-slate-300">Bocamina Asignada</label>
+                            <select id="modal_bocamina" name="bocamina_id" required x-model="bocamina_id"
+                                    class="mt-1 block w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500 focus:border-amber-500 text-sm">
+                                <option value="">Seleccione una bocamina...</option>
+                                @foreach($bocaminas as $bocamina)
+                                    <option value="{{ $bocamina->id }}">{{ $bocamina->nombre }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div>
+                            <label for="modal_estado" class="block text-sm font-medium text-slate-300">Estado</label>
+                            <select id="modal_estado" name="estado" required x-model="estado"
+                                    class="mt-1 block w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500 focus:border-amber-500 text-sm">
+                                <option value="activo">Activo</option>
+                                <option value="inactivo">Inactivo</option>
+                            </select>
+                        </div>
+                    </div>
+
                     <div>
-                        <label for="modal_estado" class="block text-sm font-medium text-slate-300">Estado</label>
-                        <select id="modal_estado" name="estado" required x-model="estado"
-                                class="mt-1 block w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500 focus:border-amber-500 text-sm">
-                            <option value="activo">Activo</option>
-                            <option value="inactivo">Inactivo</option>
-                        </select>
+                        <label for="modal_observaciones" class="block text-sm font-medium text-slate-300">Observaciones (Opcional)</label>
+                        <textarea id="modal_observaciones" name="observaciones" rows="2" x-model="observaciones"
+                                  class="mt-1 block w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500 focus:border-amber-500 text-sm"
+                                  placeholder="Notas adicionales..."></textarea>
                     </div>
                 </div>
 

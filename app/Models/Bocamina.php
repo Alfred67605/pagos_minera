@@ -17,4 +17,9 @@ class Bocamina extends Model
     {
         return $this->hasMany(Contrato::class);
     }
+
+    public function socios()
+    {
+        return $this->hasMany(Socio::class);
+    }
 }

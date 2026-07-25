@@ -8,7 +8,7 @@ Sistema web desarrollado con **Laravel 11**, **TailwindCSS**, **Vite** y **Alpin
 
 Antes de comenzar, asegúrate de tener instalado en tu computadora:
 
-* **PHP** >= 8.2 (con extensiones `pdo_sqlite` o `pdo_mysql`, `mbstring`, `openssl`, `curl`)
+* **PHP** >= 8.2 (con extensiones `pdo_pgsql`, `mbstring`, `openssl`, `curl`)
 * **Composer** (gestor de dependencias de PHP)
 * **Node.js** >= 18.x y **NPM**
 * **Git**
@@ -52,23 +52,23 @@ Copia el archivo de ejemplo para crear tu archivo `.env`:
 php artisan key:generate
 ```
 
-### 6. Configurar y Preparar la Base de Datos (SQLite)
+### 6. Configurar y Preparar la Base de Datos (PostgreSQL)
 
-El proyecto utiliza **SQLite** por defecto.
+Configura las variables de base de datos en tu archivo `.env` (asegúrate de que la base de datos `pagos` esté creada en PostgreSQL):
 
-1. Crea el archivo de base de datos vacío si no existe:
-   * **Windows (PowerShell):**
-     ```powershell
-     New-Item -ItemType File -Path database/database.sqlite -Force
-     ```
-   * **Linux / macOS / Git Bash:**
-     ```bash
-     touch database/database.sqlite
-     ```
-2. Ejecuta las migraciones y puebla la base de datos con los datos iniciales y el usuario administrador:
-   ```bash
-   php artisan migrate:fresh --seed
-   ```
+```env
+DB_CONNECTION=pgsql
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_DATABASE=pagos
+DB_USERNAME=postgres
+DB_PASSWORD=admin
+```
+
+Ejecuta las migraciones y puebla la base de datos con los datos iniciales y el usuario administrador:
+```bash
+php artisan migrate:fresh --seed
+```
 
 ### 7. Compilar los Assets (CSS / JS con Vite)
 
@@ -118,5 +118,5 @@ Al ejecutar el seeder (`php artisan db:seed`), se creará automáticamente la cu
 * **Backend**: Laravel 11.x (PHP 8.2+)
 * **Frontend**: Blade, Tailwind CSS 4.0, Alpine.js
 * **Build Tool**: Vite 8.x
-* **Base de Datos**: SQLite (compatible con MySQL / PostgreSQL)
+* **Base de Datos**: PostgreSQL (compatible con SQLite / MySQL)
 

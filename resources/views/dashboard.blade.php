@@ -6,70 +6,85 @@
 <div class="space-y-8">
     
     <!-- Welcome Header -->
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0 bg-slate-900/40 p-6 rounded-2xl border border-slate-800/80 backdrop-blur-lg relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20"></div>
         <div>
-            <h1 class="text-3xl font-bold tracking-tight text-slate-100">Tablero de Control</h1>
-            <p class="text-sm text-slate-400 mt-1">Monitoreo general de bocaminas, contratos, producción y pagos.</p>
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-bold uppercase tracking-wider mb-2">
+                <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+                Sistema de Control de Pagos Mineros
+            </div>
+            <h1 class="text-3xl font-extrabold tracking-tight text-slate-100">
+                Tablero de Control <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-sky-300 to-indigo-400">Ejecutivo</span>
+            </h1>
+            <p class="text-sm text-slate-300 mt-1">Monitoreo en tiempo real de bocaminas, liquidaciones de cargas, ingresos y egresos de caja.</p>
         </div>
-        <div class="flex space-x-3 no-print">
-            <a href="{{ route('anticipos.index') }}" class="inline-flex items-center justify-center px-4 py-2.5 rounded-lg bg-slate-800 border border-slate-700/80 hover:bg-slate-750 text-sm font-medium text-slate-200 transition duration-150">
-                <i class="fa-solid fa-money-bill-transfer mr-2 text-amber-500"></i> Registrar Anticipo
+        <div class="flex space-x-3 no-print relative z-10">
+            <a href="{{ route('ventas-cargas.index') }}" class="btn-vibrant-cyan inline-flex items-center justify-center px-4 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-cyan-500/20">
+                <i class="fa-solid fa-cart-plus mr-2"></i> Nueva Venta
             </a>
-            <a href="{{ route('pagos.create') }}" class="inline-flex items-center justify-center px-4 py-2.5 rounded-lg bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-sm font-bold text-slate-950 transition duration-150 shadow-lg shadow-orange-500/10">
+            <a href="{{ route('pagos.create') }}" class="btn-vibrant-success inline-flex items-center justify-center px-4 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-emerald-500/20">
                 <i class="fa-solid fa-receipt mr-2"></i> Procesar Pago
             </a>
         </div>
     </div>
 
-    <!-- Stats Grid -->
+    <!-- Executive Stats Grid -->
     <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        <!-- Stat Card 1 -->
-        <div class="glass-card rounded-xl p-6 relative overflow-hidden group hover:border-amber-500/25 transition duration-300">
-            <div class="absolute top-0 right-0 p-3 opacity-10 text-6xl text-amber-500 group-hover:opacity-20 transition duration-300">
-                <i class="fa-solid fa-user-group"></i>
+        <!-- Ventas Mineral -->
+        <div class="glass-card rounded-2xl p-6 relative overflow-hidden group hover:border-cyan-500/40 transition duration-300">
+            <div class="absolute top-0 right-0 p-3 opacity-10 text-6xl text-cyan-400 group-hover:opacity-25 group-hover:scale-110 transition duration-300">
+                <i class="fa-solid fa-truck-ramp-box"></i>
             </div>
-            <p class="text-sm font-medium text-slate-400 uppercase tracking-wider">Trabajadores</p>
-            <p class="mt-2 text-3xl font-bold text-slate-100">{{ $totalTrabajadores }}</p>
-            <div class="mt-2 text-xs text-slate-500 font-mono">Personas registradas</div>
+            <p class="text-xs font-bold text-cyan-400 uppercase tracking-wider">Ventas Acumuladas Mineral</p>
+            <p class="mt-2 text-3xl font-extrabold text-cyan-300 font-mono">Bs. {{ number_format($totalVentasIngresos, 2) }}</p>
+            <div class="mt-2 text-xs text-slate-400 font-mono flex items-center gap-1">
+                <i class="fa-solid fa-arrow-trend-up text-emerald-400"></i> Comercialización acumulada
+            </div>
         </div>
 
-        <!-- Stat Card 2 -->
-        <div class="glass-card rounded-xl p-6 relative overflow-hidden group hover:border-amber-500/25 transition duration-300">
-            <div class="absolute top-0 right-0 p-3 opacity-10 text-6xl text-amber-500 group-hover:opacity-20 transition duration-300">
-                <i class="fa-solid fa-mountain"></i>
+        <!-- Saldo Caja General -->
+        <div class="glass-card rounded-2xl p-6 relative overflow-hidden group hover:border-sky-500/40 transition duration-300">
+            <div class="absolute top-0 right-0 p-3 opacity-10 text-6xl text-sky-400 group-hover:opacity-25 group-hover:scale-110 transition duration-300">
+                <i class="fa-solid fa-vault"></i>
             </div>
-            <p class="text-sm font-medium text-slate-400 uppercase tracking-wider">Bocaminas</p>
-            <p class="mt-2 text-3xl font-bold text-slate-100">{{ $totalBocaminas }}</p>
-            <div class="mt-2 text-xs text-slate-500 font-mono">Frentes de trabajo activos</div>
+            <p class="text-xs font-bold text-sky-400 uppercase tracking-wider">Saldo Caja General</p>
+            <p class="mt-2 text-3xl font-extrabold text-sky-300 font-mono">Bs. {{ number_format($saldoCajasBs, 2) }}</p>
+            <div class="mt-2 text-xs text-slate-400 font-mono flex items-center gap-1">
+                <i class="fa-solid fa-wallet text-sky-400"></i> Efectivo disponible en caja
+            </div>
         </div>
 
-        <!-- Stat Card 3 -->
-        <div class="glass-card rounded-xl p-6 relative overflow-hidden group hover:border-amber-500/25 transition duration-300">
-            <div class="absolute top-0 right-0 p-3 opacity-10 text-6xl text-amber-500 group-hover:opacity-20 transition duration-300">
-                <i class="fa-solid fa-file-contract"></i>
+        <!-- Producción Extraída -->
+        <div class="glass-card rounded-2xl p-6 relative overflow-hidden group hover:border-indigo-500/40 transition duration-300">
+            <div class="absolute top-0 right-0 p-3 opacity-10 text-6xl text-indigo-400 group-hover:opacity-25 group-hover:scale-110 transition duration-300">
+                <i class="fa-solid fa-cubes"></i>
             </div>
-            <p class="text-sm font-medium text-slate-400 uppercase tracking-wider">Contratos Activos</p>
-            <p class="mt-2 text-3xl font-bold text-slate-100">{{ $totalContratosActivos }}</p>
-            <div class="mt-2 text-xs text-slate-500 font-mono">Acuerdos vigentes en ejecución</div>
+            <p class="text-xs font-bold text-indigo-400 uppercase tracking-wider">Producción Total Extraída</p>
+            <p class="mt-2 text-3xl font-extrabold text-indigo-300 font-mono">{{ number_format($totalToneladasExtraidas, 2) }} <span class="text-sm font-normal text-slate-400">Tn</span></p>
+            <div class="mt-2 text-xs text-slate-400 font-mono flex items-center gap-1">
+                <i class="fa-solid fa-mountain text-indigo-400"></i> Volumen físico de bocaminas
+            </div>
         </div>
 
-        <!-- Stat Card 4 -->
-        <div class="glass-card rounded-xl p-6 relative overflow-hidden group hover:border-amber-500/25 transition duration-300">
-            <div class="absolute top-0 right-0 p-3 opacity-10 text-6xl text-amber-500 group-hover:opacity-20 transition duration-300">
-                <i class="fa-solid fa-hand-holding-dollar"></i>
+        <!-- Utilidad Neta Estimada -->
+        <div class="glass-card rounded-2xl p-6 relative overflow-hidden group hover:border-emerald-500/40 transition duration-300">
+            <div class="absolute top-0 right-0 p-3 opacity-10 text-6xl text-emerald-400 group-hover:opacity-25 group-hover:scale-110 transition duration-300">
+                <i class="fa-solid fa-chart-line"></i>
             </div>
-            <p class="text-sm font-medium text-slate-400 uppercase tracking-wider">Anticipos Pendientes</p>
-            <p class="mt-2 text-3xl font-bold text-amber-500">Bs. {{ number_format($totalAnticiposPendientes, 2) }}</p>
-            <div class="mt-2 text-xs text-slate-500 font-mono">Saldo por descontar</div>
+            <p class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Utilidad Neta Empresa / Coop.</p>
+            <p class="mt-2 text-3xl font-extrabold text-emerald-300 font-mono">Bs. {{ number_format($utilidadNetaEstimada, 2) }}</p>
+            <div class="mt-2 text-xs text-slate-400 font-mono flex items-center gap-1">
+                <i class="fa-solid fa-piggy-bank text-emerald-400"></i> Balance financiero positivo
+            </div>
         </div>
     </div>
 
     <!-- Charts Grid -->
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <!-- Chart 1: Producción por Bocamina -->
-        <div class="glass-card rounded-xl p-6">
-            <h3 class="text-lg font-semibold text-slate-100 mb-4 flex items-center">
-                <i class="fa-solid fa-mountain mr-2 text-amber-500"></i> Producción Total por Bocamina (Bs.)
+        <div class="glass-card rounded-2xl p-6">
+            <h3 class="text-lg font-bold text-slate-100 mb-4 flex items-center">
+                <i class="fa-solid fa-mountain mr-2 text-cyan-400"></i> Producción Total por Bocamina (Bs.)
             </h3>
             <div class="relative h-72">
                 <canvas id="bocaminasChart"></canvas>
@@ -77,9 +92,9 @@
         </div>
 
         <!-- Chart 2: Pagos Históricos -->
-        <div class="glass-card rounded-xl p-6">
-            <h3 class="text-lg font-semibold text-slate-100 mb-4 flex items-center">
-                <i class="fa-solid fa-chart-area mr-2 text-amber-500"></i> Desembolsos de Pagos Netos (Últimos Meses)
+        <div class="glass-card rounded-2xl p-6">
+            <h3 class="text-lg font-bold text-slate-100 mb-4 flex items-center">
+                <i class="fa-solid fa-chart-area mr-2 text-sky-400"></i> Desembolsos de Pagos Netos (Últimos Meses)
             </h3>
             <div class="relative h-72">
                 <canvas id="pagosChart"></canvas>
@@ -89,41 +104,38 @@
 
     <!-- Recent Logs Grid -->
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <!-- Recent Advances -->
-        <div class="glass-card rounded-xl p-6">
+        <!-- Ventas Recientes -->
+        <div class="glass-card rounded-2xl p-6">
             <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-semibold text-slate-100 flex items-center">
-                    <i class="fa-solid fa-money-bill-transfer mr-2 text-amber-500"></i> Anticipos Recientes
+                <h3 class="text-lg font-bold text-slate-100 flex items-center">
+                    <i class="fa-solid fa-truck-ramp-box mr-2 text-cyan-400"></i> Ventas de Cargas Recientes
                 </h3>
-                <a href="{{ route('anticipos.index') }}" class="text-xs text-amber-500 hover:underline">Ver todos</a>
+                <a href="{{ route('ventas-cargas.index') }}" class="text-xs font-bold text-cyan-400 hover:text-cyan-300 hover:underline">Ver todas</a>
             </div>
             <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-slate-800">
+                <table class="min-w-full divide-y divide-slate-800 text-sm">
                     <thead>
-                        <tr class="text-left text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                            <th class="pb-3 font-medium">Trabajador</th>
-                            <th class="pb-3 font-medium">Fecha</th>
-                            <th class="pb-3 font-medium">Monto Total</th>
-                            <th class="pb-3 font-medium">Saldo Pendiente</th>
-                            <th class="pb-3 font-medium">Estado</th>
+                        <tr class="text-left font-bold text-slate-400 uppercase tracking-wider text-xs">
+                            <th class="py-3">Nº / Fecha</th>
+                            <th class="py-3">Socio</th>
+                            <th class="py-3">Mineral</th>
+                            <th class="py-3 text-right">Total</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-800/40 text-sm text-slate-300">
-                        @forelse($recientesAnticipos as $anticipo)
-                            <tr>
-                                <td class="py-3 font-medium text-slate-200">{{ $anticipo->trabajador->nombre }}</td>
-                                <td class="py-3 font-mono">{{ $anticipo->fecha->format('d/m/Y') }}</td>
-                                <td class="py-3 font-mono text-amber-500">Bs. {{ number_format($anticipo->monto, 2) }}</td>
-                                <td class="py-3 font-mono text-red-400">Bs. {{ number_format($anticipo->saldo, 2) }}</td>
-                                <td class="py-3">
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium {{ $anticipo->pagado ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/25' : 'bg-amber-500/10 text-amber-400 border border-amber-500/25' }}">
-                                        {{ $anticipo->pagado ? 'Pagado' : 'Pendiente' }}
-                                    </span>
+                    <tbody class="divide-y divide-slate-800/50 text-slate-200">
+                        @forelse($recientesVentas as $venta)
+                            <tr class="hover:bg-slate-900/40 transition">
+                                <td class="py-3 font-mono">
+                                    <span class="text-cyan-400 font-bold">{{ $venta->numero_venta }}</span>
+                                    <span class="block text-slate-400 text-xs">{{ $venta->fecha->format('d/m/Y') }}</span>
                                 </td>
+                                <td class="py-3 font-medium text-slate-100">{{ $venta->socio->nombre }}</td>
+                                <td class="py-3 text-cyan-300 font-semibold">{{ $venta->tipo_mineral }}</td>
+                                <td class="py-3 font-mono text-right font-bold text-sky-400">Bs. {{ number_format($venta->total_vendido, 2) }}</td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="py-4 text-center text-slate-500">No hay registros de anticipos recientes.</td>
+                                <td colspan="4" class="py-6 text-center text-slate-500 font-medium">No hay ventas registradas.</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -131,41 +143,37 @@
             </div>
         </div>
 
-        <!-- Recent Payments processed -->
-        <div class="glass-card rounded-xl p-6">
+        <!-- Recent Advances -->
+        <div class="glass-card rounded-2xl p-6">
             <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-semibold text-slate-100 flex items-center">
-                    <i class="fa-solid fa-receipt mr-2 text-amber-500"></i> Pagos Procesados Recientemente
+                <h3 class="text-lg font-bold text-slate-100 flex items-center">
+                    <i class="fa-solid fa-money-bill-transfer mr-2 text-sky-400"></i> Anticipos Recientes
                 </h3>
-                <a href="{{ route('pagos.index') }}" class="text-xs text-amber-500 hover:underline">Ver todos</a>
+                <a href="{{ route('anticipos.index') }}" class="text-xs font-bold text-sky-400 hover:text-sky-300 hover:underline">Ver todos</a>
             </div>
             <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-slate-800">
+                <table class="min-w-full divide-y divide-slate-800 text-sm">
                     <thead>
-                        <tr class="text-left text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                            <th class="pb-3 font-medium">Trabajador</th>
-                            <th class="pb-3 font-medium">Fecha</th>
-                            <th class="pb-3 font-medium">Anticipos Descontados</th>
-                            <th class="pb-3 font-medium">Pago Neto</th>
-                            <th class="pb-3 font-medium">Acción</th>
+                        <tr class="text-left font-bold text-slate-400 uppercase tracking-wider text-xs">
+                            <th class="py-3">Beneficiario</th>
+                            <th class="py-3">Fecha</th>
+                            <th class="py-3 text-right">Monto</th>
+                            <th class="py-3 text-right">Saldo</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-800/40 text-sm text-slate-300">
-                        @forelse($recientesPagos as $pago)
-                            <tr>
-                                <td class="py-3 font-medium text-slate-200">{{ $pago->trabajador->nombre }}</td>
-                                <td class="py-3 font-mono">{{ $pago->fecha->format('d/m/Y') }}</td>
-                                <td class="py-3 font-mono text-red-400">-Bs. {{ number_format($pago->anticipos_descontados, 2) }}</td>
-                                <td class="py-3 font-mono text-emerald-400 font-semibold">Bs. {{ number_format($pago->neto, 2) }}</td>
-                                <td class="py-3">
-                                    <a href="{{ route('pagos.show', $pago->id) }}" class="text-amber-500 hover:text-amber-400 text-xs font-medium flex items-center">
-                                        <i class="fa-solid fa-print mr-1"></i> Recibo
-                                    </a>
+                    <tbody class="divide-y divide-slate-800/50 text-slate-200">
+                        @forelse($recientesAnticipos as $anticipo)
+                            <tr class="hover:bg-slate-900/40 transition">
+                                <td class="py-3 font-medium text-slate-100">
+                                    {{ $anticipo->tipo_receptor === 'socio' ? ($anticipo->socio->nombre ?? '-') : ($anticipo->trabajador->nombre ?? '-') }}
                                 </td>
+                                <td class="py-3 font-mono text-slate-400 text-xs">{{ $anticipo->fecha->format('d/m/Y') }}</td>
+                                <td class="py-3 font-mono text-right text-slate-300">Bs. {{ number_format($anticipo->monto, 2) }}</td>
+                                <td class="py-3 font-mono text-right font-bold text-cyan-400">Bs. {{ number_format($anticipo->saldo, 2) }}</td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="py-4 text-center text-slate-500">No hay pagos procesados.</td>
+                                <td colspan="4" class="py-6 text-center text-slate-500 font-medium">No hay anticipos registrados.</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -173,29 +181,31 @@
             </div>
         </div>
     </div>
-
 </div>
 
-<!-- Render Charts Scripts -->
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        // Data from backend
-        const produccionBocaminas = @json($produccionBocaminas);
-        const pagosMensuales = @json($pagosMensuales);
+    document.addEventListener('DOMContentLoaded', function() {
+        // Render Producción Chart with Cyan Gradient
+        const bocaminasData = @json($produccionBocaminas);
+        const bocaminasLabels = bocaminasData.map(item => item.nombre);
+        const bocaminasTotals = bocaminasData.map(item => item.total);
 
-        // Chart 1: Bocaminas
-        const bocaminasCtx = document.getElementById('bocaminasChart').getContext('2d');
-        new Chart(bocaminasCtx, {
+        const ctx1 = document.getElementById('bocaminasChart').getContext('2d');
+        const grad1 = ctx1.createLinearGradient(0, 0, 0, 300);
+        grad1.addColorStop(0, 'rgba(6, 182, 212, 0.85)');
+        grad1.addColorStop(1, 'rgba(56, 189, 248, 0.25)');
+
+        new Chart(ctx1, {
             type: 'bar',
             data: {
-                labels: produccionBocaminas.map(b => b.nombre),
+                labels: bocaminasLabels,
                 datasets: [{
-                    label: 'Producción en Bs.',
-                    data: produccionBocaminas.map(b => b.total),
-                    backgroundColor: 'rgba(245, 158, 11, 0.45)',
-                    borderColor: '#f59e0b',
-                    borderWidth: 1.5,
-                    borderRadius: 6
+                    label: 'Producción (Bs.)',
+                    data: bocaminasTotals,
+                    backgroundColor: grad1,
+                    borderColor: '#06b6d4',
+                    borderWidth: 2,
+                    borderRadius: 8,
                 }]
             },
             options: {
@@ -205,35 +215,38 @@
                     legend: { display: false }
                 },
                 scales: {
-                    x: {
-                        grid: { color: 'rgba(255, 255, 255, 0.05)' },
-                        ticks: { color: '#94a3b8' }
-                    },
-                    y: {
-                        grid: { color: 'rgba(255, 255, 255, 0.05)' },
-                        ticks: { color: '#94a3b8' }
-                    }
+                    x: { ticks: { color: '#94a3b8', font: { family: 'Outfit', size: 12 } }, grid: { display: false } },
+                    y: { ticks: { color: '#94a3b8', font: { family: 'Outfit', size: 12 } }, grid: { color: 'rgba(255, 255, 255, 0.05)' } }
                 }
             }
         });
 
-        // Chart 2: Pagos Mensuales
-        const pagosCtx = document.getElementById('pagosChart').getContext('2d');
-        new Chart(pagosCtx, {
+        // Render Pagos Chart with Sky Blue Line
+        const pagosData = @json($pagosMensuales);
+        const pagosLabels = pagosData.map(item => item.etiqueta);
+        const pagosTotals = pagosData.map(item => item.total);
+
+        const ctx2 = document.getElementById('pagosChart').getContext('2d');
+        const grad2 = ctx2.createLinearGradient(0, 0, 0, 300);
+        grad2.addColorStop(0, 'rgba(56, 189, 248, 0.35)');
+        grad2.addColorStop(1, 'rgba(6, 182, 212, 0.02)');
+
+        new Chart(ctx2, {
             type: 'line',
             data: {
-                labels: pagosMensuales.map(p => p.etiqueta),
+                labels: pagosLabels,
                 datasets: [{
-                    label: 'Neto Desembolsado',
-                    data: pagosMensuales.map(p => p.total),
-                    backgroundColor: 'rgba(234, 88, 12, 0.15)',
-                    borderColor: '#ea580c',
-                    borderWidth: 2,
+                    label: 'Pagos Netos (Bs.)',
+                    data: pagosTotals,
+                    borderColor: '#38bdf8',
+                    backgroundColor: grad2,
                     fill: true,
-                    tension: 0.3,
-                    pointBackgroundColor: '#f59e0b',
-                    pointBorderColor: '#020617',
-                    pointHoverRadius: 6
+                    tension: 0.4,
+                    borderWidth: 3,
+                    pointBackgroundColor: '#06b6d4',
+                    pointBorderColor: '#ffffff',
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
                 }]
             },
             options: {
@@ -243,14 +256,8 @@
                     legend: { display: false }
                 },
                 scales: {
-                    x: {
-                        grid: { color: 'rgba(255, 255, 255, 0.05)' },
-                        ticks: { color: '#94a3b8' }
-                    },
-                    y: {
-                        grid: { color: 'rgba(255, 255, 255, 0.05)' },
-                        ticks: { color: '#94a3b8' }
-                    }
+                    x: { ticks: { color: '#94a3b8', font: { family: 'Outfit', size: 12 } }, grid: { display: false } },
+                    y: { ticks: { color: '#94a3b8', font: { family: 'Outfit', size: 12 } }, grid: { color: 'rgba(255, 255, 255, 0.05)' } }
                 }
             }
         });
