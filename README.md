@@ -1,122 +1,119 @@
-# ⛏️ SCPM - Sistema de Control de Pagos Mineros
+# 💎 SCP MINERO - Sistema Enterprise de Control de Pagos y Gestión Minera
 
-Sistema web desarrollado con **Laravel 11**, **TailwindCSS**, **Vite** y **Alpine.js** para la gestión y control de pagos a personal minero, bocaminas, contratos, saldos pendientes y anticipos.
+[![Laravel](https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com)
+[![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38BDF8?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
+[![Alpine.js](https://img.shields.io/badge/Alpine.js-8BC0D0?style=for-the-badge&logo=alpine.js&logoColor=black)](https://alpinejs.dev)
+[![Chart.js](https://img.shields.io/badge/Chart.js-FF6384?style=for-the-badge&logo=chartdotjs&logoColor=white)](https://www.chartjs.org/)
 
----
-
-## 📋 Requisitos Previos
-
-Antes de comenzar, asegúrate de tener instalado en tu computadora:
-
-* **PHP** >= 8.2 (con extensiones `pdo_pgsql`, `mbstring`, `openssl`, `curl`)
-* **Composer** (gestor de dependencias de PHP)
-* **Node.js** >= 18.x y **NPM**
-* **Git**
+**SCP MINERO** es un sistema ERP de grado empresarial de estándar internacional (*Stripe / Linear / Vercel Aesthetic*) diseñado para la administración integral, liquidación de pagos, control financiero, comercialización de minerales y contabilidad general de empresas y cooperativas mineras.
 
 ---
 
-## 🚀 Pasos para Clonar e Instalar el Proyecto
-
-Sigue estos pasos en orden para levantar el sistema localmente desde cero:
-
-### 1. Clonar el Repositorio
-Abre tu terminal y ejecuta:
-```bash
-git clone https://github.com/lucybeltran/sistema-pagos.git
-cd sistema-pagos
-```
-
-### 2. Instalar Dependencias de PHP (Composer)
-```bash
-composer install
-```
-
-### 3. Instalar Dependencias de JavaScript (NPM)
-```bash
-npm install
-```
-
-### 4. Configurar el Archivo de Entorno (`.env`)
-Copia el archivo de ejemplo para crear tu archivo `.env`:
-* **Windows (PowerShell):**
-  ```powershell
-  copy .env.example .env
-  ```
-* **Linux / macOS / Git Bash:**
-  ```bash
-  cp .env.example .env
-  ```
-
-### 5. Generar la Clave de la Aplicación (App Key)
-```bash
-php artisan key:generate
-```
-
-### 6. Configurar y Preparar la Base de Datos (PostgreSQL)
-
-Configura las variables de base de datos en tu archivo `.env` (asegúrate de que la base de datos `pagos` esté creada en PostgreSQL):
-
-```env
-DB_CONNECTION=pgsql
-DB_HOST=127.0.0.1
-DB_PORT=5432
-DB_DATABASE=pagos
-DB_USERNAME=postgres
-DB_PASSWORD=admin
-```
-
-Ejecuta las migraciones y puebla la base de datos con los datos iniciales y el usuario administrador:
-```bash
-php artisan migrate:fresh --seed
-```
-
-### 7. Compilar los Assets (CSS / JS con Vite)
-
-Para compilar los estilos y scripts en modo desarrollo:
-```bash
-npm run dev
-```
-*(Opcional: Si quieres compilar para producción, ejecuta `npm run build`)*
-
-### 8. Iniciar el Servidor de Desarrollo (Laravel)
-
-En otra ventana de la terminal, ejecuta:
-```bash
-php artisan serve
-```
-
-El sistema estará disponible en: **`http://127.0.0.1:8000`**
+## 🌟 Diseño & Arquitectura UI/UX Premium
+- **Tema Visual**: Inspirado en degradados elegantes Celeste/Cyan (`#38BDF8`, `#0EA5E9`), Glassmorphism con bordes translúcidos neón y tarjetas elevadas (`backdrop-filter: blur(20px)`).
+- **Tipografía**: Fuentes modernas Google Fonts **Plus Jakarta Sans** e **Inter**.
+- **Navegación Organizativa**: Dividida en **4 Módulos Principales** desplegables con indicador de sección activa.
+- **Navbar Superior SaaS**: Atajo de búsqueda global (`Ctrl + K`), Breadcrumbs dinámicos, notificaciones y reloj en vivo.
+- **Layout Inmunizado**: Sistema de Flexbox de dos columnas independientes que previene cualquier solapamiento.
 
 ---
 
-## 🔑 Credenciales de Acceso por Defecto
+## 🗂️ Estructura de Módulos del Sistema
 
-Al ejecutar el seeder (`php artisan db:seed`), se creará automáticamente la cuenta del administrador:
+### 📊 1. Módulo de Reportes & Tablero
+- **Tablero Ejecutivo Principal**: Monitoreo en tiempo real de ventas acumuladas, saldo en caja general, volumen de producción extraída y utilidad neta estimada.
+- **Gráficos Estadísticos Interactivos**: Gráficos de producción acumulada por bocamina y curva histórica de desembolsos en pagos.
+- **Reportes Generales**: Reportes consolidados exportables e imprimibles.
 
-* **Correo Electrónico:** `admin@mina.com`
-* **Contraseña:** `admin123`
+### 🟢 2. Módulo de Ingresos Económicos
+- **Ventas de Cargas de Mineral**: Registro de liquidaciones de comercialización de lotes de mineral (Complejo Zn-Pb-Ag, Zinc, Plata) con peso neto, precio unitario y comprador.
+- **Ingresos Operativos**: Registro de cobros y abonos a caja general.
+- **Compradores de Mineral**: Padrón y catálogo de empresas metalúrgicas y comercializadoras clientes.
+
+### 🔴 3. Módulo de Egresos y Gastos
+- **Pagos y Recibos a Personal**: Asistente de liquidación salarial por avance de metro, volquetas o sueldo fijo con bonos, descuentos y amortización automática de anticipos.
+- **Anticipos & Adelantos**: Otorgamiento y seguimiento de saldos pendientes de adelantos a trabajadores y socios.
+- **Egresos y Gastos Operativos**: Control de compras de insumos (explosivos, dinamita, diésel oil, repuestos, herramientas y servicios) clasificados por categoría.
+- **Caja General y Cajas Chicas**: Control de saldos en efectivo, arqueos y libro de movimientos de caja.
+
+### ⚙️ 4. Módulo de Administración
+- **Personal y Trabajadores**: Padrón de perforistas, cargadores, capataces, choferes y serenos con su asignación a bocaminas.
+- **Contratos Mineros**: Gestión de contratos por metraje de avance, cargado de volquetas o por producción.
+- **Socios Cooperativistas**: Registro de socios con porcentaje de participación sobre utilidades y asignación de bocamina.
+- **Bocaminas**: Administración de frentes de explotación, vetas y niveles socavón.
+- **Producción Minera Diaria**: Registro de volumen de cargas extraídas y tonelaje estimado diario por sector.
+- **Préstamos & Créditos a Socios**: Asignación de préstamos financieros con generación automática de planes de cuotas.
+- **Distribución de Utilidades**: Liquidación periódica de utilidades netas distribuidas según el porcentaje de participación de cada socio.
+- **Contabilidad General**: Plan de Cuentas estándar (Activos, Pasivos, Patrimonio, Ingresos, Gastos) y Libro Diario de Asientos Contables balanceados.
 
 ---
 
-## ✨ Características Principales
+## 🗄️ Sembrado de Datos Demostrativos (`Seeders`)
 
-* **Gestión de Bocaminas**: Registro y administración de áreas de trabajo y sectores mineros.
-* **Control de Trabajadores / Contratistas**: Registro con validaciones avanzadas de CI, nombres con mayúsculas iniciales y teléfono.
-* **Gestión de Contratos**: Definición de contratos por metros, volquetas, sacos o cajas con avance automático.
-* **Liquidación de Pagos & Saldos**:
-  * Pagos totales y pagos parciales (con saldos pendientes para la siguiente planilla).
-  * Generación automática de anticipos por sobrantes de efectivo entregados.
-  * Justificación / observación obligatoria en caso de registrar descuentos.
-* **Historial de Anticipos (Solo Lectura)**: Log histórico de adelantos con filtros por Bocamina y por Trabajador.
-* **Impresión de Recibos**: Emisión e impresión de recibos formales de pagos y anticipos.
-* **Dashboard y Reportes**: Reportes detallados por fecha, saldos pendientes e historial financiero.
+El proyecto cuenta con un **DatabaseSeeder completo y autosuficiente** (`DatabaseSeeder.php`) que puebla toda la base de datos con información altamente realista de la operación minera:
+
+### Datos sembrados automáticamente:
+- **Usuario Administrador**: `admin@mina.com` / `admin123`
+- **5 Bocaminas**: *San José (Nivel 3), Rosario (Nivel 5), Santa María, La Esperanza, San Antonio*.
+- **4 Socios Cooperativistas**: *Donato Quispe (35%), Germán Morales (30%), Benjamín Gutiérrez (20%), Teófilo Alarcón (15%)*.
+- **7 Trabajadores**: *Perforistas, cargadores, enmaderadores, choferes, serenos y administradores*.
+- **4 Contratos Mineros**: *Metraje de avance en veta, volquetas cargadas y disparos*.
+- **4 Compradores de Mineral**: *Vinto S.A., Baremsa Ltda., San Cristóbal S.A., Minerales del Sur*.
+- **4 Ventas de Mineral**: *Transacciones de cargas por un total superior a Bs. 350,000*.
+- **2 Cajas Operativas**: *Caja General Central (Bs. 150,000) y Caja Chica Mina (Bs. 25,000)*.
+- **3 Egresos Operativos**: *Facturas de explosivos, diésel oil y repuestos industrial el minero*.
+- **5 Registros Diarios de Producción Minera**.
+- **2 Préstamos a Socios** con tablas de amortización de cuotas.
+- **1 Distribución de Utilidades** repartida entre los socios.
+- **Plan de Cuentas y Asientos Contables Balanceados**.
 
 ---
 
-## 🛠️ Tecnologías Utilizadas
+## 🛠️ Instalación y Configuración Local
 
-* **Backend**: Laravel 11.x (PHP 8.2+)
-* **Frontend**: Blade, Tailwind CSS 4.0, Alpine.js
-* **Build Tool**: Vite 8.x
-* **Base de Datos**: PostgreSQL (compatible con SQLite / MySQL)
+1. **Clonar el repositorio**:
+   ```bash
+   git clone https://github.com/Alfred67605/pagos_minera.git
+   cd pagos_minera
+   ```
 
+2. **Instalar dependencias de PHP**:
+   ```bash
+   composer install
+   ```
+
+3. **Configurar el archivo `.env`**:
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+
+4. **Configurar la Base de Datos** (PostgreSQL o MySQL en `.env`):
+   ```env
+   DB_CONNECTION=pgsql
+   DB_HOST=127.0.0.1
+   DB_PORT=5432
+   DB_DATABASE=pagos
+   DB_USERNAME=postgres
+   DB_PASSWORD=tu_contraseña
+   ```
+
+5. **Ejecutar Migraciones y Poblado de Datos (Seeders)**:
+   ```bash
+   php artisan migrate:fresh --seed
+   ```
+
+6. **Iniciar el Servidor de Desarrollo**:
+   ```bash
+   php artisan serve
+   ```
+
+7. **Acceso al Sistema**:
+   - **URL**: `http://127.0.0.1:8000`
+   - **Usuario**: `admin@mina.com`
+   - **Contraseña**: `admin123`
+
+---
+
+## 📄 Licencia
+Este proyecto es software privado de gestión minera empresarial.
