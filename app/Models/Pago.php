@@ -23,6 +23,7 @@ class Pago extends Model
         'observacion',
         'metodo_pago',
         'entregado_por',
+        'caja_id',
         'user_id',
     ];
 
@@ -30,6 +31,11 @@ class Pago extends Model
         'fecha' => 'date',
         'saldo_liquidado' => 'boolean',
     ];
+
+    public function caja()
+    {
+        return $this->belongsTo(Caja::class, 'caja_id');
+    }
 
     public function trabajador()
     {

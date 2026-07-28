@@ -16,6 +16,12 @@ class Egreso extends Model
         'categoria_id',
         'monto',
         'concepto',
+        'presentacion',
+        'bocamina_id',
+        'peso_bruto',
+        'tara',
+        'peso_neto',
+        'ley_mineral',
         'fecha',
         'comprobante_numero',
         'proveedor',
@@ -26,6 +32,11 @@ class Egreso extends Model
     public function caja()
     {
         return $this->belongsTo(Caja::class, 'caja_id');
+    }
+
+    public function bocamina()
+    {
+        return $this->belongsTo(Bocamina::class, 'bocamina_id');
     }
 
     public function categoria()

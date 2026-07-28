@@ -6,10 +6,10 @@
     <title>@yield('title', 'Sistema de Pagos Mineros') - SCPM SaaS</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     
-    <!-- Google Fonts: Plus Jakarta Sans & Inter -->
+    <!-- Google Fonts: Plus Jakarta Sans, Inter & JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     <!-- FontAwesome & Lucide Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -25,6 +25,8 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     <style>
+        [x-cloak] { display: none !important; }
+        
         body, html {
             margin: 0;
             padding: 0;
@@ -32,6 +34,11 @@
             background-color: #020617;
             color: #f8fafc;
             min-height: 100vh;
+        }
+
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace !important;
+            letter-spacing: -0.02em;
         }
         /* Custom scrollbar Cyan Gradient */
         ::-webkit-scrollbar {
@@ -48,19 +55,20 @@
         ::-webkit-scrollbar-thumb:hover {
             background: linear-gradient(180deg, #0891b2, #0284c7);
         }
-        /* Glassmorphism card utilities Premium Cyan */
+        /* Glassmorphism card utilities Premium Cyan High-Contrast */
         .glass-card {
-            background: rgba(15, 23, 42, 0.65);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(56, 189, 248, 0.14);
+            background: rgba(15, 23, 42, 0.98) !important;
+            backdrop-filter: blur(32px) !important;
+            -webkit-backdrop-filter: blur(32px) !important;
+            border: 1.5px solid rgba(56, 189, 248, 0.45) !important;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.85) !important;
             position: relative;
             overflow: hidden;
             transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .glass-card:hover {
-            border-color: rgba(56, 189, 248, 0.3);
-            box-shadow: 0 16px 40px rgba(6, 182, 212, 0.15);
+            border-color: rgba(56, 189, 248, 0.65) !important;
+            box-shadow: 0 20px 50px rgba(6, 182, 212, 0.28) !important;
         }
         .glass-card::before {
             content: '';
@@ -192,12 +200,13 @@
     <!-- Root Container: Flex Layout with Natural Scroll -->
     <div class="min-h-screen flex flex-col md:flex-row bg-slate-950 relative" x-data="{ searchModalOpen: false, mobileOpen: false }">
         
-        <!-- Particle Canvas Background -->
-        <canvas id="particle-canvas" class="fixed inset-0 pointer-events-none z-0 opacity-40"></canvas>
-        <div class="fixed inset-0 pointer-events-none z-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-cyan-900/20 via-slate-950 to-slate-950"></div>
+        <!-- Futuristic Mining Background Image Overlay -->
+        <div class="fixed inset-0 pointer-events-none z-0 bg-cover bg-center bg-no-repeat opacity-15 scale-105 filter blur-[2px]" style="background-image: url('{{ asset('bg.jpg') }}');"></div>
+        <div class="fixed inset-0 pointer-events-none z-0 bg-slate-950/90 backdrop-blur-[4px]"></div>
+        <canvas id="particle-canvas" class="fixed inset-0 pointer-events-none z-0 opacity-20"></canvas>
 
         <!-- Desktop Sidebar (Sticky Top 0, Independent Scroll) -->
-        <aside style="width: 280px; min-width: 280px; max-width: 280px;" class="no-print hidden md:flex flex-col h-screen sticky top-0 bg-slate-900/95 backdrop-blur-xl border-r border-slate-800/80 z-30 shadow-2xl flex-shrink-0">
+        <aside style="width: 280px; min-width: 280px; max-width: 280px;" class="no-print hidden md:flex flex-col h-screen sticky top-0 bg-slate-900/95 backdrop-blur-xl border-r border-slate-800/80 z-20 shadow-2xl flex-shrink-0">
             <div class="flex flex-col flex-grow pt-5 pb-4 overflow-y-auto">
                 <!-- Brand Header -->
                 <div class="flex items-center flex-shrink-0 px-6 space-x-3.5 pb-4 border-b border-slate-800/80">
@@ -212,135 +221,118 @@
                     </div>
                 </div>
                 
-                <!-- Nav Groups (4 SaaS Modules) -->
+                <!-- Nav Groups (SaaS Modules) -->
                 <nav class="mt-6 flex-1 px-3 space-y-3 relative overflow-y-auto" id="main-nav"
                      x-data="{
-                         openGroup: '{{ request()->routeIs('dashboard', 'reportes.*') ? 'reportes' : (request()->routeIs('ventas-cargas.*', 'ingresos.*', 'compradores.*') ? 'ingresos' : (request()->routeIs('pagos.*', 'anticipos.*', 'egresos.*', 'cajas.*') ? 'egresos' : 'admin')) }}'
+                         openGroup: '{{ request()->routeIs('dashboard', 'reportes.*') ? 'reportes' : (request()->routeIs('trabajadores.*', 'contratos.*', 'pagos.*', 'anticipos.*', 'cajas.*') ? 'personal' : (request()->routeIs('ventas-cargas.*', 'egresos.*', 'ingresos.*', 'compradores.*') ? 'mineral' : 'admin')) }}'
                      }">
 
-                    <!-- MÓDULO 1: REPORTES Y TABLERO -->
+                    <!-- DASHBOARD GENERAL (ACCESO DIRECTO) -->
+                    <a href="{{ route('dashboard') }}" 
+                       class="group flex items-center justify-between px-4 py-3.5 text-xs font-black uppercase tracking-wider rounded-2xl transition-all duration-200 border-2 {{ request()->routeIs('dashboard') ? 'text-cyan-300 bg-gradient-to-r from-cyan-500/20 via-sky-500/10 to-slate-900 border-cyan-400/60 shadow-lg shadow-cyan-500/20' : 'text-slate-200 bg-slate-950/80 border-slate-800 hover:text-cyan-300 hover:bg-slate-900 hover:border-cyan-500/40' }}">
+                        <span class="flex items-center gap-3">
+                            <i class="fa-solid fa-gauge-high text-cyan-400 text-base group-hover:scale-110 group-hover:rotate-6 transition-transform"></i>
+                            DASHBOARD GENERAL
+                        </span>
+                        <i class="fa-solid fa-chevron-right text-xs text-cyan-400 opacity-60 group-hover:opacity-100 group-hover:translate-x-1 transition-all"></i>
+                    </a>
+
+                    <!-- MÓDULO 2: GESTIÓN DE PERSONAL & NÓMINAS -->
                     <div class="rounded-2xl overflow-hidden bg-slate-950/60 border border-slate-800/80">
-                        <button @click="openGroup = (openGroup === 'reportes' ? '' : 'reportes')" 
-                                class="w-full flex items-center justify-between px-3.5 py-3 text-sm font-bold uppercase tracking-wider text-slate-200 hover:text-amber-400 transition-colors bg-slate-900/80">
+                        <button @click="openGroup = (openGroup === 'personal' ? '' : 'personal')" 
+                                class="w-full flex items-center justify-between px-3.5 py-3 text-xs font-extrabold uppercase tracking-wider text-slate-200 hover:text-rose-400 transition-colors bg-slate-900/80">
                             <span class="flex items-center gap-2.5">
-                                <i class="fa-solid fa-chart-pie text-amber-500 text-base"></i>
-                                Reportes & Tablero
+                                <i class="fa-solid fa-users-gear text-rose-400 text-sm"></i>
+                                GESTIÓN DE PERSONAL & NÓMINAS
                             </span>
-                            <i class="fa-solid fa-chevron-down text-xs transition-transform duration-200" :class="{ 'rotate-180': openGroup === 'reportes' }"></i>
+                            <i class="fa-solid fa-chevron-down text-xs transition-transform duration-200" :class="{ 'rotate-180': openGroup === 'personal' }"></i>
                         </button>
                         
-                        <div x-show="openGroup === 'reportes'" class="p-1.5 space-y-1 bg-slate-950/80 border-t border-slate-800/40">
-                            <a href="{{ route('dashboard') }}" class="nav-item flex items-center px-3.5 py-2.5 text-sm font-medium rounded-xl transition-colors {{ request()->routeIs('dashboard') ? 'active-nav-item text-amber-400 bg-amber-500/10 font-bold' : 'text-slate-300 hover:text-slate-100 hover:bg-slate-900/60' }}">
-                                <i class="fa-solid fa-chart-line w-6 text-center mr-2.5 text-sm"></i>
-                                Tablero Principal
+                        <div x-show="openGroup === 'personal'" class="p-1.5 space-y-1 bg-slate-950/80 border-t border-slate-800/40">
+                            <a href="{{ route('cajas.index') }}" class="group flex items-center px-3 py-2.5 text-xs font-bold rounded-xl transition-all duration-200 border border-transparent {{ (request()->routeIs('cajas.*') && !request('tipo')) ? 'text-emerald-300 bg-emerald-500/15 border-emerald-500/30 shadow-lg shadow-emerald-500/10' : 'text-slate-300 hover:text-emerald-300 hover:bg-slate-900/90 hover:border-emerald-500/20' }}">
+                                <i class="fa-solid fa-building-columns w-5 text-center mr-2 text-sm text-emerald-400 group-hover:scale-110 group-hover:rotate-6 transition-transform"></i>
+                                Fondo y Recarga Banco
                             </a>
-                            <a href="{{ route('reportes.index') }}" class="nav-item flex items-center px-3.5 py-2.5 text-sm font-medium rounded-xl transition-colors {{ request()->routeIs('reportes.*') ? 'active-nav-item text-amber-400 bg-amber-500/10 font-bold' : 'text-slate-300 hover:text-slate-100 hover:bg-slate-900/60' }}">
-                                <i class="fa-solid fa-file-waveform w-6 text-center mr-2.5 text-sm"></i>
-                                Reportes Generales
+                            <a href="{{ route('pagos.create') }}" class="group flex items-center px-3 py-2.5 text-xs font-bold rounded-xl transition-all duration-200 border border-transparent {{ request()->routeIs('pagos.*') ? 'text-rose-300 bg-rose-500/15 border-rose-500/30 shadow-lg shadow-rose-500/10' : 'text-slate-300 hover:text-rose-300 hover:bg-slate-900/90 hover:border-rose-500/20' }}">
+                                <i class="fa-solid fa-calculator w-5 text-center mr-2 text-sm text-rose-400 group-hover:scale-110 group-hover:rotate-6 transition-transform"></i>
+                                Liquidación & Planillas de Pago
+                            </a>
+                            <a href="{{ route('anticipos.index') }}" class="group flex items-center px-3 py-2.5 text-xs font-bold rounded-xl transition-all duration-200 border border-transparent {{ request()->routeIs('anticipos.*') ? 'text-purple-300 bg-purple-500/15 border-purple-500/30 shadow-lg shadow-purple-500/10' : 'text-slate-300 hover:text-purple-300 hover:bg-slate-900/90 hover:border-purple-500/20' }}">
+                                <i class="fa-solid fa-hand-holding-dollar w-5 text-center mr-2 text-sm text-purple-400 group-hover:scale-110 group-hover:rotate-6 transition-transform"></i>
+                                Anticipos & Vales Diarios
+                            </a>
+                            <a href="{{ route('trabajadores.index') }}" class="group flex items-center px-3 py-2.5 text-xs font-bold rounded-xl transition-all duration-200 border border-transparent {{ request()->routeIs('trabajadores.*') ? 'text-sky-300 bg-sky-500/15 border-sky-500/30 shadow-lg shadow-sky-500/10' : 'text-slate-300 hover:text-sky-300 hover:bg-slate-900/90 hover:border-sky-500/20' }}">
+                                <i class="fa-solid fa-user-group w-5 text-center mr-2 text-sm text-sky-400 group-hover:scale-110 group-hover:rotate-6 transition-transform"></i>
+                                Registro de Personal
+                            </a>
+                            <a href="{{ route('contratos.index') }}" class="group flex items-center px-3 py-2.5 text-xs font-bold rounded-xl transition-all duration-200 border border-transparent {{ request()->routeIs('contratos.*') ? 'text-indigo-300 bg-indigo-500/15 border-indigo-500/30 shadow-lg shadow-indigo-500/10' : 'text-slate-300 hover:text-indigo-300 hover:bg-slate-900/90 hover:border-indigo-500/20' }}">
+                                <i class="fa-solid fa-file-contract w-5 text-center mr-2 text-sm text-indigo-400 group-hover:scale-110 group-hover:rotate-6 transition-transform"></i>
+                                Registro de Contratos
+                            </a>
+                            <a href="{{ route('reportes.index', ['tab' => 'trabajador']) }}" class="group flex items-center px-3 py-2.5 text-xs font-bold rounded-xl transition-all duration-200 border border-transparent {{ request('tab') === 'trabajador' ? 'text-cyan-300 bg-cyan-500/15 border-cyan-500/30 shadow-lg shadow-cyan-500/10' : 'text-slate-300 hover:text-cyan-300 hover:bg-slate-900/90 hover:border-cyan-500/20' }}">
+                                <i class="fa-solid fa-chart-line w-5 text-center mr-2 text-sm text-cyan-400 group-hover:scale-110 group-hover:rotate-6 transition-transform"></i>
+                                Reportes de Personal
                             </a>
                         </div>
                     </div>
 
-                    <!-- MÓDULO 2: INGRESOS -->
+                    <!-- MÓDULO 3: COMERCIALIZACIÓN Y PRODUCCIÓN DE MINERAL -->
                     <div class="rounded-2xl overflow-hidden bg-slate-950/60 border border-slate-800/80">
-                        <button @click="openGroup = (openGroup === 'ingresos' ? '' : 'ingresos')" 
-                                class="w-full flex items-center justify-between px-3.5 py-3 text-sm font-bold uppercase tracking-wider text-slate-200 hover:text-emerald-400 transition-colors bg-slate-900/80">
+                        <button @click="openGroup = (openGroup === 'mineral' ? '' : 'mineral')" 
+                                class="w-full flex items-center justify-between px-3.5 py-3 text-xs font-extrabold uppercase tracking-wider text-slate-200 hover:text-emerald-400 transition-colors bg-slate-900/80">
                             <span class="flex items-center gap-2.5">
-                                <i class="fa-solid fa-coins text-emerald-400 text-base"></i>
-                                Ingresos Económicos
+                                <i class="fa-solid fa-truck-ramp-box text-emerald-400 text-sm"></i>
+                                MINERÍA & VOLQUETAS
                             </span>
-                            <i class="fa-solid fa-chevron-down text-xs transition-transform duration-200" :class="{ 'rotate-180': openGroup === 'ingresos' }"></i>
+                            <i class="fa-solid fa-chevron-down text-xs transition-transform duration-200" :class="{ 'rotate-180': openGroup === 'mineral' }"></i>
                         </button>
                         
-                        <div x-show="openGroup === 'ingresos'" class="p-1.5 space-y-1 bg-slate-950/80 border-t border-slate-800/40">
-                            <a href="{{ route('ventas-cargas.index') }}" class="nav-item flex items-center px-3.5 py-2.5 text-sm font-medium rounded-xl transition-colors {{ request()->routeIs('ventas-cargas.*') ? 'active-nav-item text-emerald-400 bg-emerald-500/10 font-bold' : 'text-slate-300 hover:text-slate-100 hover:bg-slate-900/60' }}">
-                                <i class="fa-solid fa-truck-ramp-box w-6 text-center mr-2.5 text-sm"></i>
-                                Ventas de Cargas
+                        <div x-show="openGroup === 'mineral'" class="p-1.5 space-y-1 bg-slate-950/80 border-t border-slate-800/40">
+                            <a href="{{ route('bocaminas.index') }}" class="group flex items-center px-3 py-2.5 text-xs font-bold rounded-xl transition-all duration-200 border border-transparent {{ request()->routeIs('bocaminas.*') ? 'text-amber-300 bg-amber-500/15 border-amber-500/30 shadow-lg shadow-amber-500/10' : 'text-slate-300 hover:text-amber-300 hover:bg-slate-900/90 hover:border-amber-500/20' }}">
+                                <i class="fa-solid fa-mountain w-5 text-center mr-2 text-sm text-amber-400 group-hover:scale-110 group-hover:rotate-6 transition-transform"></i>
+                                Registro de Bocaminas
                             </a>
-                            <a href="{{ route('ingresos.index') }}" class="nav-item flex items-center px-3.5 py-2.5 text-sm font-medium rounded-xl transition-colors {{ request()->routeIs('ingresos.*') ? 'active-nav-item text-emerald-400 bg-emerald-500/10 font-bold' : 'text-slate-300 hover:text-slate-100 hover:bg-slate-900/60' }}">
-                                <i class="fa-solid fa-sack-dollar w-6 text-center mr-2.5 text-sm"></i>
-                                Ingresos Operativos
+                            <a href="{{ route('produccion.index') }}" class="group flex items-center px-3 py-2.5 text-xs font-bold rounded-xl transition-all duration-200 border border-transparent {{ request()->routeIs('produccion.*') ? 'text-cyan-300 bg-cyan-500/15 border-cyan-500/30 shadow-lg shadow-cyan-500/10' : 'text-slate-300 hover:text-cyan-300 hover:bg-slate-900/90 hover:border-cyan-500/20' }}">
+                                <i class="fa-solid fa-cubes w-5 text-center mr-2 text-sm text-cyan-400 group-hover:scale-110 group-hover:rotate-6 transition-transform"></i>
+                                Producción Minera
                             </a>
-                            <a href="{{ route('compradores.index') }}" class="nav-item flex items-center px-3.5 py-2.5 text-sm font-medium rounded-xl transition-colors {{ request()->routeIs('compradores.*') ? 'active-nav-item text-emerald-400 bg-emerald-500/10 font-bold' : 'text-slate-300 hover:text-slate-100 hover:bg-slate-900/60' }}">
-                                <i class="fa-solid fa-handshake w-6 text-center mr-2.5 text-sm"></i>
-                                Compradores de Mineral
+                            <a href="{{ route('ventas-cargas.index') }}" class="group flex items-center px-3 py-2.5 text-xs font-bold rounded-xl transition-all duration-200 border border-transparent {{ request()->routeIs('ventas-cargas.*') ? 'text-emerald-300 bg-emerald-500/15 border-emerald-500/30 shadow-lg shadow-emerald-500/10' : 'text-slate-300 hover:text-emerald-300 hover:bg-slate-900/90 hover:border-emerald-500/20' }}">
+                                <i class="fa-solid fa-truck-field w-5 text-center mr-2 text-sm text-emerald-400 group-hover:scale-110 group-hover:rotate-6 transition-transform"></i>
+                                Ventas (Volquetas/Sacos)
+                            </a>
+                            <a href="{{ route('egresos.index') }}" class="group flex items-center px-3 py-2.5 text-xs font-bold rounded-xl transition-all duration-200 border border-transparent {{ request()->routeIs('egresos.*') ? 'text-rose-300 bg-rose-500/15 border-rose-500/30 shadow-lg shadow-rose-500/10' : 'text-slate-300 hover:text-rose-300 hover:bg-slate-900/90 hover:border-rose-500/20' }}">
+                                <i class="fa-solid fa-cart-shopping w-5 text-center mr-2 text-sm text-rose-400 group-hover:scale-110 group-hover:rotate-6 transition-transform"></i>
+                                Compras Mineral & Gastos
+                            </a>
+                            <a href="{{ route('compradores.index') }}" class="group flex items-center px-3 py-2.5 text-xs font-bold rounded-xl transition-all duration-200 border border-transparent {{ request()->routeIs('compradores.*') ? 'text-amber-300 bg-amber-500/15 border-amber-500/30 shadow-lg shadow-amber-500/10' : 'text-slate-300 hover:text-amber-300 hover:bg-slate-900/90 hover:border-amber-500/20' }}">
+                                <i class="fa-solid fa-handshake w-5 text-center mr-2 text-sm text-amber-400 group-hover:scale-110 group-hover:rotate-6 transition-transform"></i>
+                                Compradores Mineral
+                            </a>
+                            <a href="{{ route('cajas.index', ['tipo' => 'comercial']) }}" class="group flex items-center px-3 py-2.5 text-xs font-bold rounded-xl transition-all duration-200 border border-transparent {{ (request()->routeIs('cajas.*') && request('tipo') === 'comercial') ? 'text-cyan-300 bg-cyan-500/15 border-cyan-500/30 shadow-lg shadow-cyan-500/10' : 'text-slate-300 hover:text-cyan-300 hover:bg-slate-900/90 hover:border-cyan-500/20' }}">
+                                <i class="fa-solid fa-vault w-5 text-center mr-2 text-sm text-cyan-400 group-hover:scale-110 group-hover:rotate-6 transition-transform"></i>
+                                Caja Operativa Comercial
                             </a>
                         </div>
                     </div>
 
-                    <!-- MÓDULO 3: EGRESOS Y GASTOS -->
-                    <div class="rounded-2xl overflow-hidden bg-slate-950/60 border border-slate-800/80">
-                        <button @click="openGroup = (openGroup === 'egresos' ? '' : 'egresos')" 
-                                class="w-full flex items-center justify-between px-3.5 py-3 text-sm font-bold uppercase tracking-wider text-slate-200 hover:text-rose-400 transition-colors bg-slate-900/80">
-                            <span class="flex items-center gap-2.5">
-                                <i class="fa-solid fa-wallet text-rose-400 text-base"></i>
-                                Egresos y Gastos
-                            </span>
-                            <i class="fa-solid fa-chevron-down text-xs transition-transform duration-200" :class="{ 'rotate-180': openGroup === 'egresos' }"></i>
-                        </button>
-                        
-                        <div x-show="openGroup === 'egresos'" class="p-1.5 space-y-1 bg-slate-950/80 border-t border-slate-800/40">
-                            <a href="{{ route('pagos.index') }}" class="nav-item flex items-center px-3.5 py-2.5 text-sm font-medium rounded-xl transition-colors {{ request()->routeIs('pagos.*') ? 'active-nav-item text-rose-400 bg-rose-500/10 font-bold' : 'text-slate-300 hover:text-slate-100 hover:bg-slate-900/60' }}">
-                                <i class="fa-solid fa-receipt w-6 text-center mr-2.5 text-sm"></i>
-                                Pagos y Recibos
-                            </a>
-                            <a href="{{ route('anticipos.index') }}" class="nav-item flex items-center px-3.5 py-2.5 text-sm font-medium rounded-xl transition-colors {{ request()->routeIs('anticipos.*') ? 'active-nav-item text-rose-400 bg-rose-500/10 font-bold' : 'text-slate-300 hover:text-slate-100 hover:bg-slate-900/60' }}">
-                                <i class="fa-solid fa-money-bill-transfer w-6 text-center mr-2.5 text-sm"></i>
-                                Anticipos
-                            </a>
-                            <a href="{{ route('egresos.index') }}" class="nav-item flex items-center px-3.5 py-2.5 text-sm font-medium rounded-xl transition-colors {{ request()->routeIs('egresos.*') ? 'active-nav-item text-rose-400 bg-rose-500/10 font-bold' : 'text-slate-300 hover:text-slate-100 hover:bg-slate-900/60' }}">
-                                <i class="fa-solid fa-file-invoice-dollar w-6 text-center mr-2.5 text-sm"></i>
-                                Egresos / Gastos
-                            </a>
-                            <a href="{{ route('cajas.index') }}" class="nav-item flex items-center px-3.5 py-2.5 text-sm font-medium rounded-xl transition-colors {{ request()->routeIs('cajas.*') ? 'active-nav-item text-rose-400 bg-rose-500/10 font-bold' : 'text-slate-300 hover:text-slate-100 hover:bg-slate-900/60' }}">
-                                <i class="fa-solid fa-vault w-6 text-center mr-2.5 text-sm"></i>
-                                Caja General
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- MÓDULO 4: ADMINISTRACIÓN -->
+                    <!-- MÓDULO 4: ADMINISTRACIÓN Y SOCIOS -->
                     <div class="rounded-2xl overflow-hidden bg-slate-950/60 border border-slate-800/80">
                         <button @click="openGroup = (openGroup === 'admin' ? '' : 'admin')" 
-                                class="w-full flex items-center justify-between px-3.5 py-3 text-sm font-bold uppercase tracking-wider text-slate-200 hover:text-sky-400 transition-colors bg-slate-900/80">
+                                class="w-full flex items-center justify-between px-3.5 py-3 text-xs font-extrabold uppercase tracking-wider text-slate-200 hover:text-sky-400 transition-colors bg-slate-900/80">
                             <span class="flex items-center gap-2.5">
-                                <i class="fa-solid fa-folder-tree text-sky-400 text-base"></i>
-                                Administración
+                                <i class="fa-solid fa-folder-tree text-sky-400 text-sm"></i>
+                                ADMINISTRACIÓN & SOCIOS
                             </span>
                             <i class="fa-solid fa-chevron-down text-xs transition-transform duration-200" :class="{ 'rotate-180': openGroup === 'admin' }"></i>
                         </button>
                         
                         <div x-show="openGroup === 'admin'" class="p-1.5 space-y-1 bg-slate-950/80 border-t border-slate-800/40">
-                            <a href="{{ route('trabajadores.index') }}" class="nav-item flex items-center px-3.5 py-2.5 text-sm font-medium rounded-xl transition-colors {{ request()->routeIs('trabajadores.*') ? 'active-nav-item text-sky-400 bg-sky-500/10 font-bold' : 'text-slate-300 hover:text-slate-100 hover:bg-slate-900/60' }}">
-                                <i class="fa-solid fa-user-group w-6 text-center mr-2.5 text-sm"></i>
-                                Personal y Trabajadores
-                            </a>
-                            <a href="{{ route('contratos.index') }}" class="nav-item flex items-center px-3.5 py-2.5 text-sm font-medium rounded-xl transition-colors {{ request()->routeIs('contratos.*') ? 'active-nav-item text-sky-400 bg-sky-500/10 font-bold' : 'text-slate-300 hover:text-slate-100 hover:bg-slate-900/60' }}">
-                                <i class="fa-solid fa-file-contract w-6 text-center mr-2.5 text-sm"></i>
-                                Contratos
-                            </a>
-                            <a href="{{ route('socios.index') }}" class="nav-item flex items-center px-3.5 py-2.5 text-sm font-medium rounded-xl transition-colors {{ request()->routeIs('socios.*') ? 'active-nav-item text-sky-400 bg-sky-500/10 font-bold' : 'text-slate-300 hover:text-slate-100 hover:bg-slate-900/60' }}">
-                                <i class="fa-solid fa-id-card w-6 text-center mr-2.5 text-sm"></i>
+                            <a href="{{ route('socios.index') }}" class="group flex items-center px-3 py-2.5 text-xs font-bold rounded-xl transition-all duration-200 border border-transparent {{ request()->routeIs('socios.*') ? 'text-sky-300 bg-sky-500/15 border-sky-500/30 shadow-lg shadow-sky-500/10' : 'text-slate-300 hover:text-sky-300 hover:bg-slate-900/90 hover:border-sky-500/20' }}">
+                                <i class="fa-solid fa-id-card w-5 text-center mr-2 text-sm text-sky-400 group-hover:scale-110 group-hover:rotate-6 transition-transform"></i>
                                 Socios Cooperativistas
                             </a>
-                            <a href="{{ route('bocaminas.index') }}" class="nav-item flex items-center px-3.5 py-2.5 text-sm font-medium rounded-xl transition-colors {{ request()->routeIs('bocaminas.*') ? 'active-nav-item text-sky-400 bg-sky-500/10 font-bold' : 'text-slate-300 hover:text-slate-100 hover:bg-slate-900/60' }}">
-                                <i class="fa-solid fa-mountain w-6 text-center mr-2.5 text-sm"></i>
-                                Bocaminas
-                            </a>
-                            <a href="{{ route('produccion.index') }}" class="nav-item flex items-center px-3.5 py-2.5 text-sm font-medium rounded-xl transition-colors {{ request()->routeIs('produccion.*') ? 'active-nav-item text-sky-400 bg-sky-500/10 font-bold' : 'text-slate-300 hover:text-slate-100 hover:bg-slate-900/60' }}">
-                                <i class="fa-solid fa-cubes w-6 text-center mr-2.5 text-sm"></i>
-                                Producción Minera
-                            </a>
-                            <a href="{{ route('prestamos.index') }}" class="nav-item flex items-center px-3.5 py-2.5 text-sm font-medium rounded-xl transition-colors {{ request()->routeIs('prestamos.*') ? 'active-nav-item text-sky-400 bg-sky-500/10 font-bold' : 'text-slate-300 hover:text-slate-100 hover:bg-slate-900/60' }}">
-                                <i class="fa-solid fa-hand-holding-dollar w-6 text-center mr-2.5 text-sm"></i>
-                                Préstamos & Créditos
-                            </a>
-                            <a href="{{ route('utilidades.index') }}" class="nav-item flex items-center px-3.5 py-2.5 text-sm font-medium rounded-xl transition-colors {{ request()->routeIs('utilidades.*') ? 'active-nav-item text-sky-400 bg-sky-500/10 font-bold' : 'text-slate-300 hover:text-slate-100 hover:bg-slate-900/60' }}">
-                                <i class="fa-solid fa-chart-pie w-6 text-center mr-2.5 text-sm"></i>
-                                Distribución Utilidades
-                            </a>
-                            <a href="{{ route('contabilidad.index') }}" class="nav-item flex items-center px-3.5 py-2.5 text-sm font-medium rounded-xl transition-colors {{ request()->routeIs('contabilidad.*') ? 'active-nav-item text-sky-400 bg-sky-500/10 font-bold' : 'text-slate-300 hover:text-slate-100 hover:bg-slate-900/60' }}">
-                                <i class="fa-solid fa-book-bookmark w-6 text-center mr-2.5 text-sm"></i>
+                            <a href="{{ route('contabilidad.index') }}" class="group flex items-center px-3 py-2.5 text-xs font-bold rounded-xl transition-all duration-200 border border-transparent {{ request()->routeIs('contabilidad.*') ? 'text-emerald-300 bg-emerald-500/15 border-emerald-500/30 shadow-lg shadow-emerald-500/10' : 'text-slate-300 hover:text-emerald-300 hover:bg-slate-900/90 hover:border-emerald-500/20' }}">
+                                <i class="fa-solid fa-book-bookmark w-5 text-center mr-2 text-sm text-emerald-400 group-hover:scale-110 group-hover:rotate-6 transition-transform"></i>
                                 Contabilidad General
                             </a>
                         </div>
@@ -364,30 +356,34 @@
             </div>
             
             <div x-show="mobileOpen" @click.away="mobileOpen = false" class="px-3 pt-2 pb-4 space-y-2.5 bg-slate-900/95 border-b border-slate-800 max-h-[85vh] overflow-y-auto">
+                <a href="{{ route('dashboard') }}" class="block px-4 py-3 text-sm font-black text-cyan-400 bg-slate-950 border border-cyan-500/30 rounded-xl flex items-center gap-2">
+                    <i class="fa-solid fa-gauge-high"></i> DASHBOARD GENERAL
+                </a>
                 <div class="border border-slate-800 rounded-xl overflow-hidden">
-                    <a href="{{ route('dashboard') }}" class="block px-4 py-2.5 text-sm font-bold text-amber-400">Tablero Principal</a>
-                    <a href="{{ route('reportes.index') }}" class="block px-4 py-2.5 text-sm font-bold text-amber-400">Reportes Generales</a>
+                    <div class="px-4 py-1.5 bg-slate-950 text-[10px] font-bold text-rose-400 uppercase">Gestión de Personal & Nóminas</div>
+                    <a href="{{ route('cajas.index') }}" class="block px-4 py-2 text-sm font-bold text-emerald-400">Fondo y Recarga Banco</a>
+                    <a href="{{ route('pagos.create') }}" class="block px-4 py-2 text-sm font-bold text-rose-400">Liquidación y Pago de Personal</a>
+                    <a href="{{ route('pagos.index') }}" class="block px-4 py-2 text-sm font-bold text-slate-200">Historial y Planillas Pagadas</a>
+                    <a href="{{ route('anticipos.index') }}" class="block px-4 py-2 text-sm font-bold text-slate-200">Anticipos y Adelantos</a>
+                    <a href="{{ route('trabajadores.index') }}" class="block px-4 py-2 text-sm font-bold text-slate-200">Registro de Personal</a>
+                    <a href="{{ route('contratos.index') }}" class="block px-4 py-2 text-sm font-bold text-slate-200">Registro de Contratos</a>
+                    <a href="{{ route('reportes.index', ['tab' => 'trabajador']) }}" class="block px-4 py-2 text-sm font-bold text-cyan-400">Reportes de Personal</a>
                 </div>
                 <div class="border border-slate-800 rounded-xl overflow-hidden">
-                    <a href="{{ route('ventas-cargas.index') }}" class="block px-4 py-2.5 text-sm font-bold text-emerald-400">Ventas de Cargas</a>
-                    <a href="{{ route('ingresos.index') }}" class="block px-4 py-2.5 text-sm font-bold text-emerald-400">Ingresos Operativos</a>
-                    <a href="{{ route('compradores.index') }}" class="block px-4 py-2.5 text-sm font-bold text-emerald-400">Compradores</a>
+                    <div class="px-4 py-1.5 bg-slate-950 text-[10px] font-bold text-emerald-400 uppercase">Mineral & Volquetas</div>
+                    <a href="{{ route('ventas-cargas.index') }}" class="block px-4 py-2 text-sm font-bold text-emerald-400">🚛 Ventas (Volquetas/Sacos)</a>
+                    <a href="{{ route('egresos.index') }}" class="block px-4 py-2 text-sm font-bold text-slate-200">📉 Compras Mineral & Gastos</a>
+                    <a href="{{ route('compradores.index') }}" class="block px-4 py-2 text-sm font-bold text-slate-200">🤝 Compradores / Comercializadoras</a>
+                    <a href="{{ route('cajas.index') }}" class="block px-4 py-2 text-sm font-bold text-slate-200">🏦 Caja Operativa Comercial</a>
                 </div>
                 <div class="border border-slate-800 rounded-xl overflow-hidden">
-                    <a href="{{ route('pagos.index') }}" class="block px-4 py-2.5 text-sm font-bold text-rose-400">Pagos y Recibos</a>
-                    <a href="{{ route('anticipos.index') }}" class="block px-4 py-2.5 text-sm font-bold text-rose-400">Anticipos</a>
-                    <a href="{{ route('egresos.index') }}" class="block px-4 py-2.5 text-sm font-bold text-rose-400">Egresos / Gastos</a>
-                    <a href="{{ route('cajas.index') }}" class="block px-4 py-2.5 text-sm font-bold text-rose-400">Caja General</a>
-                </div>
-                <div class="border border-slate-800 rounded-xl overflow-hidden">
-                    <a href="{{ route('trabajadores.index') }}" class="block px-4 py-2.5 text-sm font-bold text-sky-400">Personal y Trabajadores</a>
-                    <a href="{{ route('contratos.index') }}" class="block px-4 py-2.5 text-sm font-bold text-sky-400">Contratos</a>
-                    <a href="{{ route('socios.index') }}" class="block px-4 py-2.5 text-sm font-bold text-sky-400">Socios Cooperativistas</a>
-                    <a href="{{ route('bocaminas.index') }}" class="block px-4 py-2.5 text-sm font-bold text-sky-400">Bocaminas</a>
-                    <a href="{{ route('produccion.index') }}" class="block px-4 py-2.5 text-sm font-bold text-sky-400">Producción Minera</a>
-                    <a href="{{ route('prestamos.index') }}" class="block px-4 py-2.5 text-sm font-bold text-sky-400">Préstamos & Créditos</a>
-                    <a href="{{ route('utilidades.index') }}" class="block px-4 py-2.5 text-sm font-bold text-sky-400">Distribución Utilidades</a>
-                    <a href="{{ route('contabilidad.index') }}" class="block px-4 py-2.5 text-sm font-bold text-sky-400">Contabilidad General</a>
+                    <div class="px-4 py-1.5 bg-slate-950 text-[10px] font-bold text-sky-400 uppercase">Administración & Socios</div>
+                    <a href="{{ route('socios.index') }}" class="block px-4 py-2 text-sm font-bold text-slate-200">Socios Cooperativistas</a>
+                    <a href="{{ route('bocaminas.index') }}" class="block px-4 py-2 text-sm font-bold text-slate-200">Bocaminas</a>
+                    <a href="{{ route('produccion.index') }}" class="block px-4 py-2 text-sm font-bold text-slate-200">Producción Minera</a>
+                    <a href="{{ route('prestamos.index') }}" class="block px-4 py-2 text-sm font-bold text-slate-200">Préstamos & Créditos</a>
+                    <a href="{{ route('utilidades.index') }}" class="block px-4 py-2 text-sm font-bold text-slate-200">Distribución Utilidades</a>
+                    <a href="{{ route('contabilidad.index') }}" class="block px-4 py-2 text-sm font-bold text-slate-200">Contabilidad General</a>
                 </div>
                 
                 <form action="{{ route('logout') }}" method="POST" class="block w-full pt-2">
@@ -400,7 +396,7 @@
         </div>
 
         <!-- Main Right Content Column (Flex-1, Smooth Document Scroll) -->
-        <div class="flex-1 min-w-0 flex flex-col relative z-10">
+        <div class="flex-1 min-w-0 flex flex-col relative z-30">
             
             <!-- Top Navbar Header (Sticky Top 0) -->
             <header class="no-print hidden md:flex items-center justify-between h-20 bg-slate-900/80 backdrop-blur-xl border-b border-slate-800/80 px-8 flex-shrink-0 sticky top-0 z-20">

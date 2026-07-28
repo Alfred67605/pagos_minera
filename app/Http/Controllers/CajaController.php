@@ -13,6 +13,16 @@ class CajaController extends Controller
     public function index()
     {
         $cajas = Caja::withCount('movimientos')->get();
+        foreach ($cajas as $caja) {
+            $caja->total_ingresos = $caja->movimientos()->where('tipo', 'ingreso')->sum('monto');
+            $caja->total_egresos = $caja->movimientos()->where('tipo', 'egreso')->sum('monto');
+            $caja->total_anticipos = $caja->movimientos()->where('tipo', 'egreso')->where(function($q){
+                $q->where('categoria', 'LIKE', '%Anticipo%')->orWhere('referencia_tipo', 'anticipo');
+            })->sum('monto');
+            $caja->total_planillas = $caja->movimientos()->where('tipo', 'egreso')->where(function($q){
+                $q->where('categoria', 'LIKE', '%Pago%')->orWhere('referencia_tipo', 'pago_planilla');
+            })->sum('monto');
+        }
         return view('cajas.index', compact('cajas'));
     }
 
@@ -129,5 +139,37 @@ class CajaController extends Controller
 
         $caja->delete();
         return redirect()->route('cajas.index')->with('success', 'Caja eliminada exitosamente.');
+    }
+
+    public function recargar(Request $request, Caja $caja)
+    {
+        if ($caja->estado !== 'abierta') {
+            return back()->withErrors(['error' => 'No se puede recargar una caja que se encuentra cerrada.']);
+        }
+
+        $request->validate([
+            'monto' => 'required|numeric|min:0.01',
+            'concepto' => 'required|string|max:255',
+            'origen' => 'nullable|string|max:255',
+        ]);
+
+        $monto = (float) $request->monto;
+
+        DB::transaction(function() use ($caja, $request, $monto) {
+            CajaMovimiento::create([
+                'caja_id' => $caja->id,
+                'tipo' => 'ingreso',
+                'monto' => $monto,
+                'concepto' => 'Recarga de Fondos: ' . $request->concepto . ($request->origen ? ' (Origen: ' . $request->origen . ')' : ''),
+                'categoria' => 'Recarga de Fondos',
+                'fecha' => now()->toDateString(),
+                'user_id' => Auth::id(),
+            ]);
+
+            $caja->saldo_actual += $monto;
+            $caja->save();
+        });
+
+        return back()->with('success', "Se han recargado Bs. " . number_format($monto, 2) . " exitosamente en la caja {$caja->nombre}.");
     }
 }

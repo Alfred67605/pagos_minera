@@ -1,18 +1,23 @@
 @extends('layouts.app')
 
-@section('title', 'Historial de Pagos')
+@section('title', 'Planillas Semanales y Pagos Realizados')
 
 @section('content')
 <div class="space-y-6">
 
-    <!-- Header -->
-    <div class="flex items-center justify-between">
+    <!-- Header Banner -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-slate-900/60 p-6 rounded-2xl border border-slate-800/80">
         <div>
-            <h1 class="text-3xl font-bold tracking-tight text-slate-100">Historial de Pagos</h1>
-            <p class="text-sm text-slate-400 mt-1">Consulta los pagos históricos realizados y descarga sus recibos de pago.</p>
+            <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight text-white flex items-center gap-3">
+                <div class="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400">
+                    <i class="fa-solid fa-receipt text-2xl"></i>
+                </div>
+                Planillas Semanales y Pagos Realizados
+            </h1>
+            <p class="text-sm text-slate-400 mt-1">Histórico completo de pagos semanales a contratistas, liquidaciones de trabajo y recibos en efectivo.</p>
         </div>
-        <a href="{{ route('pagos.create') }}" class="inline-flex items-center justify-center px-4 py-2.5 rounded-lg bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-sm font-bold text-slate-950 transition duration-150 shadow-lg shadow-orange-500/10">
-            <i class="fa-solid fa-receipt mr-2"></i> Procesar Nuevo Pago
+        <a href="{{ route('pagos.create') }}" class="btn-vibrant-amber px-5 py-3 rounded-xl text-xs font-extrabold uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20">
+            <i class="fa-solid fa-plus-circle text-base"></i> Pagar Nueva Semana
         </a>
     </div>
 

@@ -14,7 +14,7 @@ class EgresoController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Egreso::with(['caja', 'categoria', 'user']);
+        $query = Egreso::with(['caja', 'categoria', 'bocamina', 'user']);
 
         if ($request->filled('categoria_id')) {
             $query->where('categoria_id', $request->categoria_id);
@@ -35,8 +35,9 @@ class EgresoController extends Controller
         $egresos = $query->orderBy('fecha', 'desc')->orderBy('id', 'desc')->get();
         $categorias = CategoriaEgreso::orderBy('nombre')->get();
         $cajas = Caja::where('estado', 'abierta')->get();
+        $bocaminas = \App\Models\Bocamina::orderBy('nombre')->get();
 
-        return view('egresos.index', compact('egresos', 'categorias', 'cajas'));
+        return view('egresos.index', compact('egresos', 'categorias', 'cajas', 'bocaminas'));
     }
 
     public function store(Request $request)
@@ -47,6 +48,12 @@ class EgresoController extends Controller
             'monto' => 'required|numeric|min:0.01',
             'concepto' => 'required|string|max:255',
             'fecha' => 'required|date',
+            'presentacion' => 'nullable|string|in:volqueta,saco,concentrado,bruto',
+            'bocamina_id' => 'nullable|exists:bocaminas,id',
+            'peso_bruto' => 'nullable|numeric|min:0',
+            'tara' => 'nullable|numeric|min:0',
+            'peso_neto' => 'nullable|numeric|min:0',
+            'ley_mineral' => 'nullable|string|max:255',
             'comprobante_numero' => 'nullable|string|max:100',
             'proveedor' => 'nullable|string|max:255',
             'observaciones' => 'nullable|string',
@@ -60,13 +67,23 @@ class EgresoController extends Controller
             return back()->withErrors(['monto' => "Saldo insuficiente en la caja '{$caja->nombre}' (Saldo actual: Bs. {$caja->saldo_actual})."])->withInput();
         }
 
-        DB::transaction(function() use ($request, $monto, $categoria, $caja) {
+        $pesoBruto = $request->filled('peso_bruto') ? (float)$request->peso_bruto : null;
+        $tara = $request->filled('tara') ? (float)$request->tara : null;
+        $pesoNeto = $request->filled('peso_neto') ? (float)$request->peso_neto : (($pesoBruto !== null && $tara !== null) ? max(0, $pesoBruto - $tara) : $pesoBruto);
+
+        DB::transaction(function() use ($request, $monto, $categoria, $caja, $pesoBruto, $tara, $pesoNeto) {
             $egreso = Egreso::create([
                 'caja_id' => $caja->id,
                 'categoria_id' => $request->categoria_id,
                 'monto' => $monto,
                 'concepto' => $request->concepto,
                 'fecha' => $request->fecha,
+                'presentacion' => $request->presentacion ?? 'saco',
+                'bocamina_id' => $request->bocamina_id,
+                'peso_bruto' => $pesoBruto,
+                'tara' => $tara,
+                'peso_neto' => $pesoNeto,
+                'ley_mineral' => $request->ley_mineral,
                 'comprobante_numero' => $request->comprobante_numero,
                 'proveedor' => $request->proveedor,
                 'observaciones' => $request->observaciones,
@@ -80,7 +97,7 @@ class EgresoController extends Controller
                 'caja_id' => $caja->id,
                 'tipo' => 'egreso',
                 'monto' => $monto,
-                'concepto' => "Egreso: {$request->concepto}",
+                'concepto' => "Egreso ({$egreso->presentacion}): {$request->concepto}",
                 'categoria' => $categoria->nombre,
                 'referencia_tipo' => 'egreso',
                 'referencia_id' => $egreso->id,
@@ -89,7 +106,7 @@ class EgresoController extends Controller
             ]);
         });
 
-        return redirect()->route('egresos.index')->with('success', 'Egreso/Gasto operativo registrado exitosamente.');
+        return redirect()->route('egresos.index')->with('success', 'Egreso/Compra de mineral registrado exitosamente.');
     }
 
     public function storeCategoria(Request $request)

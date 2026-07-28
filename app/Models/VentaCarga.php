@@ -17,12 +17,17 @@ class VentaCarga extends Model
         'socio_id',
         'bocamina_id',
         'tipo_mineral',
+        'presentacion',
         'cantidad',
+        'peso_bruto',
+        'tara',
         'peso_neto',
+        'ley_mineral',
         'precio_unitario',
         'total_vendido',
         'comprador',
         'comprador_id',
+        'caja_id',
         'observaciones',
         'user_id',
     ];
@@ -39,6 +44,11 @@ class VentaCarga extends Model
     public function bocamina()
     {
         return $this->belongsTo(Bocamina::class);
+    }
+
+    public function caja()
+    {
+        return $this->belongsTo(Caja::class, 'caja_id');
     }
 
     public function compradorRelacion()

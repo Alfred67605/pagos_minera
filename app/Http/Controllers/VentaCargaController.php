@@ -44,7 +44,9 @@ class VentaCargaController extends Controller
         // Unique mineral types for filter
         $minerales = ['Complejo (Zn-Pb-Ag)', 'Zinc (Zn)', 'Plomo (Pb)', 'Plata (Ag)', 'Estaño (Sn)', 'Cobre (Cu)', 'Oro (Au)'];
 
-        return view('ventas.index', compact('ventas', 'socios', 'bocaminas', 'compradores', 'minerales'));
+        $cajas = \App\Models\Caja::where('estado', 'abierta')->get();
+
+        return view('ventas.index', compact('ventas', 'socios', 'bocaminas', 'compradores', 'minerales', 'cajas'));
     }
 
     public function store(Request $request)
@@ -56,32 +58,62 @@ class VentaCargaController extends Controller
             'bocamina_id' => 'required|exists:bocaminas,id',
             'comprador_id' => 'nullable|exists:compradores,id',
             'tipo_mineral' => 'required|string|max:100',
+            'presentacion' => 'nullable|string|in:volqueta,saco,concentrado,bruto',
             'cantidad' => 'nullable|integer|min:1',
+            'peso_bruto' => 'nullable|numeric|min:0',
+            'tara' => 'nullable|numeric|min:0',
             'peso_neto' => 'required|numeric|min:0.01',
+            'ley_mineral' => 'nullable|string|max:255',
             'precio_unitario' => 'required|numeric|min:0.01',
             'comprador' => 'required|string|max:255',
+            'caja_id' => 'nullable|exists:cajas,id',
             'observaciones' => 'nullable|string',
         ]);
 
         $data['total_vendido'] = (float)$data['peso_neto'] * (float)$data['precio_unitario'];
         $data['user_id'] = Auth::id();
+        $data['presentacion'] = $data['presentacion'] ?? 'saco';
 
-        DB::transaction(function() use ($data) {
+        // Assign default Fondo Operativo if not selected
+        $caja = !empty($data['caja_id']) ? \App\Models\Caja::find($data['caja_id']) : \App\Models\Caja::getFondoOperativo();
+        if ($caja) {
+            $data['caja_id'] = $caja->id;
+        }
+
+        DB::transaction(function() use ($data, $caja) {
             $venta = VentaCarga::create($data);
 
-            // Automatically generate an Ingreso record for this sale!
-            Ingreso::create([
+            // Automatically generate an Ingreso record for this sale
+            $ingreso = Ingreso::create([
                 'fecha' => $venta->fecha,
-                'concepto' => "Venta de Mineral N° {$venta->numero_venta} - {$venta->tipo_mineral} ({$venta->socio->nombre})",
+                'concepto' => "Venta de Mineral N° {$venta->numero_venta} ({$venta->presentacion}) - {$venta->tipo_mineral}",
                 'monto' => $venta->total_vendido,
                 'origen' => 'venta_carga',
                 'venta_carga_id' => $venta->id,
-                'observaciones' => "Venta realizada a {$venta->comprador}. Peso: {$venta->peso_neto} Tn @ Bs. {$venta->precio_unitario}/Tn.",
+                'observaciones' => "Venta realizada a {$venta->comprador}. Peso Neto: {$venta->peso_neto} Tn. Ley: " . ($venta->ley_mineral ?? 'N/A'),
                 'user_id' => Auth::id(),
             ]);
+
+            // Add money to the selected Caja
+            if ($caja && $caja->estado === 'abierta') {
+                \App\Models\CajaMovimiento::create([
+                    'caja_id' => $caja->id,
+                    'tipo' => 'ingreso',
+                    'monto' => $venta->total_vendido,
+                    'concepto' => "Venta de Mineral N° {$venta->numero_venta} ({$venta->presentacion})",
+                    'categoria' => 'Venta Mineral',
+                    'referencia_tipo' => 'venta',
+                    'referencia_id' => $venta->id,
+                    'fecha' => $venta->fecha,
+                    'user_id' => Auth::id(),
+                ]);
+
+                $caja->saldo_actual += $venta->total_vendido;
+                $caja->save();
+            }
         });
 
-        return redirect()->route('ventas-cargas.index')->with('success', 'Venta de carga registrada e ingreso económico generado automáticamente.');
+        return redirect()->route('ventas-cargas.index')->with('success', 'Venta de carga registrada e ingreso acreditado en la caja correspondiente.');
     }
 
     public function update(Request $request, VentaCarga $ventasCarga)

@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SCP MINERO · Propuesta de Cotización 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap"
+    rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #e8edf5;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+      color: #0b1a2e;
+      background-image: radial-gradient(circle at 10% 20%, rgba(27, 90, 122, 0.04) 0%, transparent 50%),
+        radial-gradient(circle at 90% 80%, rgba(27, 90, 122, 0.05) 0%, transparent 50%);
+    }
+
+    .presentation {
+      max-width: 1320px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-radius: 2.8rem;
+      padding: 2.5rem 2.8rem 3rem;
+      box-shadow: 0 30px 80px rgba(0, 20, 50, 0.1), 0 10px 30px rgba(0, 0, 0, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .presentation::before {
+      content: '';
+      position: absolute;
+      top: -30%;
+      right: -15%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(27, 90, 122, 0.05) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .presentation::after {
+      content: '';
+      position: absolute;
+      bottom: -20%;
+      left: -10%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(27, 90, 122, 0.04) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    /* header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 2.2rem;
+      border-bottom: 2px solid rgba(27, 90, 122, 0.08);
+      padding-bottom: 1.6rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .logo-area {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
+    .logo-area h1 {
+      font-weight: 800;
+      font-size: 2.3rem;
+      letter-spacing: -0.03em;
+      background: linear-gradient(145deg, #0e2f4a, #1b5a7a);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo-area h1 .accent {
+      background: #1b5a7a;
+      color: white;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.2rem 0.9rem;
+      border-radius: 40px;
+      letter-spacing: 0.3px;
+    }
+
+    .logo-sub {
+      display: flex;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .logo-sub small {
+      font-weight: 500;
+      background: rgba(27, 90, 122, 0.08);
+      padding: 0.25rem 1.2rem;
+      border-radius: 40px;
+      font-size: 0.82rem;
+      color: #1a4e6b;
+      border: 1px solid rgba(27, 90, 122, 0.12);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .badge-pro {
+      background: #0b2a3f;
+      color: white;
+      padding: 0.45rem 1.4rem;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 0.82rem;
+      letter-spacing: 0.3px;
+      box-shadow: 0 4px 12px rgba(11, 42, 63, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-print {
+      background: #ffffff;
+      color: #1b5a7a;
+      border: 1.5px solid rgba(27, 90, 122, 0.25);
+      padding: 0.45rem 1.2rem;
+      border-radius: 40px;
+      font-weight: 700;
+      font-size: 0.82rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .btn-print:hover {
+      background: #1b5a7a;
+      color: white;
+      border-color: #1b5a7a;
+    }
+
+    /* grid */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1.08fr;
+      gap: 2rem;
+      margin: 1.8rem 0 2.5rem;
+      position: relative;
+      z-index: 1;
+      align-items: stretch;
+    }
+
+    @media (max-width: 860px) {
+      .grid-2 {
+        grid-template-columns: 1fr;
+        gap: 1.8rem;
+      }
+
+      .presentation {
+        padding: 1.5rem;
+      }
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-radius: 2.2rem;
+      padding: 2rem 2rem 2.2rem;
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      box-shadow: 0 8px 30px rgba(0, 30, 60, 0.06);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 16px 40px rgba(0, 30, 60, 0.09);
+    }
+
+    .card-basic {
+      border-color: rgba(27, 90, 122, 0.15);
+    }
+
+    .card-improved {
+      border: 2px solid #1b5a7a;
+      background: linear-gradient(170deg, #ffffff 0%, #f1f8fc 100%);
+      box-shadow: 0 12px 40px rgba(27, 90, 122, 0.14);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      padding-bottom: 0.9rem;
+    }
+
+    .card-header-titles .plan-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #1b5a7a;
+      margin-bottom: 0.2rem;
+    }
+
+    .card-header h2 {
+      font-weight: 800;
+      font-size: 1.75rem;
+      letter-spacing: -0.02em;
+      color: #0b1a2e;
+    }
+
+    .badge-improved {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      background: #1b5a7a;
+      color: white;
+      padding: 0.25rem 0.85rem;
+      border-radius: 30px;
+      box-shadow: 0 3px 8px rgba(27, 90, 122, 0.25);
+    }
+
+    .price {
+      font-weight: 800;
+      font-size: 2.1rem;
+      color: #0b2a3f;
+      background: linear-gradient(135deg, #dcecf7, #ebf4fa);
+      padding: 0.2rem 1.2rem;
+      border-radius: 60px;
+      letter-spacing: -0.02em;
+      border: 1px solid rgba(27, 90, 122, 0.12);
+      display: inline-block;
+      margin-bottom: 0.9rem;
+    }
+
+    .price small {
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: #1e4a66;
+      margin-left: 0.2rem;
+    }
+
+    .chip-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-bottom: 1rem;
+    }
+
+    .chip {
+      display: inline-block;
+      background: rgba(11, 42, 63, 0.06);
+      padding: 0.2rem 0.9rem;
+      border-radius: 30px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: #12415e;
+      border: 1px solid rgba(27, 90, 122, 0.1);
+    }
+
+    .chip-improved {
+      background: rgba(27, 90, 122, 0.12);
+      border-color: rgba(27, 90, 122, 0.22);
+      color: #0b3f5a;
+    }
+
+    .card-desc {
+      color: #1e4a66;
+      font-weight: 400;
+      font-size: 0.93rem;
+      margin-bottom: 1.1rem;
+      line-height: 1.55;
+    }
+
+    .feature-list {
+      list-style: none;
+      margin: 0.8rem 0;
+    }
+
+    .feature-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.7rem;
+      padding: 0.48rem 0;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: #1a3045;
+    }
+
+    .feature-list li::before {
+      content: "▸";
+      color: #1b6b8f;
+      font-weight: 700;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    .feature-list li .highlight {
+      font-weight: 700;
+      color: #0b2a3f;
+    }
+
+    .card-footer-tag {
+      margin-top: 1.2rem;
+      padding: 0.5rem 1.1rem;
+      border-radius: 60px;
+      text-align: center;
+      font-size: 0.78rem;
+      font-weight: 600;
+      background: rgba(27, 90, 122, 0.07);
+      border: 1px solid rgba(27, 90, 122, 0.1);
+      color: #1a4e6b;
+    }
+
+    .card-footer-tag-improved {
+      background: #1b5a7a;
+      color: white;
+      border: none;
+      box-shadow: 0 4px 12px rgba(27, 90, 122, 0.2);
+    }
+
+    /* comparativa */
+    .compare-section {
+      margin: 2.5rem 0 1.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .compare-section .section-title {
+      font-weight: 800;
+      font-size: 1.5rem;
+      letter-spacing: -0.01em;
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      color: #0b1a2e;
+    }
+
+    .compare-section .section-title span {
+      background: #1b5a7a;
+      color: white;
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 0.2rem 0.9rem;
+      border-radius: 40px;
+      letter-spacing: 0.3px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: 1.6rem;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(4px);
+      padding: 0.2rem;
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      min-width: 620px;
+    }
+
+    th {
+      text-align: left;
+      padding: 0.95rem 1.1rem;
+      background: rgba(11, 42, 63, 0.05);
+      font-weight: 700;
+      color: #003153;
+      border-bottom: 2px solid rgba(27, 90, 122, 0.12);
+      font-size: 0.85rem;
+      letter-spacing: 0.2px;
+    }
+
+    th:nth-child(2) {
+      width: 25%;
+      text-align: center;
+    }
+
+    th:nth-child(3) {
+      width: 25%;
+      text-align: center;
+      background: rgba(27, 90, 122, 0.09);
+    }
+
+    td {
+      padding: 0.8rem 1.1rem;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+      color: #1a3045;
+    }
+
+    td.center {
+      text-align: center;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .tag-si {
+      display: inline-block;
+      background: #e6f5ed;
+      color: #0f7b4a;
+      padding: 0.15rem 0.85rem;
+      border-radius: 30px;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    .tag-no {
+      display: inline-block;
+      background: #f5e8e8;
+      color: #b13e3e;
+      padding: 0.15rem 0.85rem;
+      border-radius: 30px;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    .tag-completo {
+      display: inline-block;
+      background: #1b5a7a;
+      color: white;
+      padding: 0.15rem 0.85rem;
+      border-radius: 30px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      box-shadow: 0 2px 6px rgba(27, 90, 122, 0.2);
+    }
+
+    .cta-legend {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 1rem;
+      gap: 1.5rem;
+      font-size: 0.82rem;
+      color: #1a4e6b;
+      flex-wrap: wrap;
+    }
+
+    .cta-legend span {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .dot-green {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      background: #0f7b4a;
+      border-radius: 50%;
+    }
+
+    .dot-red {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      background: #b13e3e;
+      border-radius: 50%;
+    }
+
+    .dot-blue {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      background: #1b5a7a;
+      border-radius: 50%;
+    }
+
+    /* nota final */
+    .note {
+      margin-top: 2rem;
+      font-size: 0.85rem;
+      color: #1b4f6b;
+      background: rgba(210, 227, 240, 0.35);
+      border-radius: 60px;
+      padding: 0.6rem 2rem;
+      display: block;
+      text-align: center;
+      border: 1px solid rgba(194, 217, 235, 0.4);
+      position: relative;
+      z-index: 1;
+      backdrop-filter: blur(2px);
+    }
+
+    /* Print styles exact for PDF */
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 10mm;
+      }
+
+      body {
+        background: white !important;
+        padding: 0 !important;
+        color: #0b1a2e !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      .presentation {
+        max-width: 100% !important;
+        width: 100% !important;
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+        background: white !important;
+        border-radius: 0 !important;
+        backdrop-filter: none !important;
+      }
+
+      .presentation::before,
+      .presentation::after {
+        display: none !important;
+      }
+
+      .btn-print {
+        display: none !important;
+      }
+
+      .card {
+        break-inside: avoid;
+        box-shadow: none !important;
+        border: 1.5px solid #a0aec0 !important;
+      }
+
+      .grid-2 {
+        gap: 1.2rem !important;
+        margin: 1.2rem 0 !important;
+      }
+
+      .compare-section {
+        margin: 1.8rem 0 1rem !important;
+      }
+
+      .table-wrap {
+        box-shadow: none !important;
+        border: 1px solid #cbd5e1 !important;
+        background: white !important;
+      }
+
+      .note {
+        margin-top: 1.2rem !important;
+        background: #f1f5f9 !important;
+        border: 1px solid #cbd5e1 !important;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .presentation {
+        padding: 1.2rem;
+      }
+
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .header-actions {
+        width: 100%;
+        justify-content: space-between;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="presentation">
+
+    <!-- header -->
+    <div class="header">
+      <div class="logo-area">
+        <h1>
+          SCP MINERO
+          <span class="accent">v.2</span>
+        </h1>
+        <div class="logo-sub">
+          <small>Sistema de Control y Gestión Minera</small>
+          <small style="background: rgba(27, 90, 122, 0.08); border-color: rgba(27, 90, 122, 0.15);">Cotización Oficial
+            2026</small>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="btn-print" onclick="window.print()">
+          🖨️ Imprimir / Guardar PDF
+        </button>
+        <div class="badge-pro">SaaS · Diseño Corporativo</div>
+      </div>
+    </div>
+
+    <!-- opciones de cotizacion -->
+    <div class="grid-2">
+      <!-- Opción Básica -->
+      <div class="card card-basic">
+        <div>
+          <div class="card-header">
+            <div class="card-header-titles">
+              <div class="plan-label">Modalidad Inicial</div>
+              <h2>Opción Básica</h2>
+            </div>
+          </div>
+          <div class="price">Bs. 14.000 <small>BOB</small></div>
+          <div class="chip-group">
+            <span class="chip">Control operativo</span>
+            <span class="chip">Bocaminas</span>
+            <span class="chip">Caja chica</span>
+          </div>
+          <p class="card-desc">Gestión del día a día, registro de trabajadores y control de caja. Ideal para operadoras
+            pequeñas.</p>
+          <ul class="feature-list">
+            <li>Tablero de control básico · monitoreo de saldo y resumen mensual</li>
+            <li>Módulo de comercialización: compradores, ventas y recibos de ingreso</li>
+            <li>Módulo de egresos: caja general, caja chica y gastos operativos</li>
+            <li>Módulo de personal: registro, contratos por avance, anticipos y descuentos</li>
+            <li>Registro básico de frentes de explotación (bocaminas)</li>
+            <li>Instalación en servidor local (1 PC) · 1 sesión de capacitación</li>
+          </ul>
+        </div>
+        <div class="card-footer-tag">Perfecto para empresas mineras pequeñas</div>
+      </div>
+
+      <!-- Opción Mejorada -->
+      <div class="card card-improved">
+        <div>
+          <div class="card-header">
+            <div class="card-header-titles">
+              <div class="plan-label" style="color: #1b5a7a;">Suite Completa Automatizada</div>
+              <h2>Opción Mejorada</h2>
+            </div>
+            <span class="badge-improved">★ Recomendado</span>
+          </div>
+          <div class="price">Bs. 18.000 <small>BOB</small></div>
+          <div class="chip-group">
+            <span class="chip chip-improved">SENARECOM M-02</span>
+            <span class="chip chip-improved">Socios & Dividendos</span>
+            <span class="chip chip-improved">Pagos & Vales Anticipo</span>
+            <span class="chip chip-improved">Seguridad & Confidencialidad</span>
+            <span class="chip chip-improved">Contabilidad</span>
+          </div>
+          <p class="card-desc">Incluye <strong>absolutamente todo</strong> el paquete de la Opción Básica, más
+            herramientas ejecutivas avanzadas y automatización tributaria/contable.</p>
+          <ul class="feature-list">
+            <li><span class="highlight">Liquidación SENARECOM M-02</span> · deducción por Maquila, Impurezas y Leyes
+              Químicas</li>
+            <li><span class="highlight">Módulo de Pagos & Vales de Anticipo</span> · planillas salariales por avance, vales de adelanto a personal y saldo líquido pagable</li>
+            <li><span class="highlight">Alta Confidencialidad & Seguridad de Datos</span> · encriptación de claves, respaldos automáticos, auditoría de transacciones y control por roles</li>
+            <li><span class="highlight">Módulo de Padrón de Socios</span> · porcentaje de participación y lista oficial
+            </li>
+            <li><span class="highlight">Distribución de Utilidades</span> y dividendos · reparto proporcional automático
+            </li>
+            <li><span class="highlight">Préstamos y créditos a socios</span> · planes de pago y cuotas programadas</li>
+            <li><span class="highlight">Control de Producción & Pesajes</span> · registro de toneladas extraídas y trazabilidad por bocamina</li>
+            <li><span class="highlight">Generación de Recibos & Comprobantes</span> · emisión e impresión de vales, anticipos y recibos de venta</li>
+            <li><span class="highlight">Módulo de Contabilidad General</span> · plan de cuentas y libro diario
+              (Debe/Haber)</li>
+            <li><span class="highlight">Dashboard Ejecutivo Global</span> · monitoreo de producción en tiempo real</li>
+            <li>Instalación en Servidor VPS Cloud o Local · 2 sesiones de capacitación + Soporte VIP</li>
+          </ul>
+        </div>
+        <div class="card-footer-tag card-footer-tag-improved">Incluye todo el paquete Básico + Herramientas ejecutivas
+          completas</div>
+      </div>
+    </div>
+
+    <!-- cuadro comparativo detallado -->
+    <div class="compare-section">
+      <div class="section-title">
+        Cuadro Comparativo Detallado
+        <span>Compara las Opciones</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Módulo / Característica del Sistema</th>
+              <th>Opción Básica (Bs. 14.000)</th>
+              <th>Opción Mejorada (Bs. 18.000)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Ventas de Mineral y Compradores (Ingenios, Baremsa, Metalúrgica Vinto)</td>
+              <td class="center"><span class="tag-si">Sí</span></td>
+              <td class="center"><span class="tag-completo">Sí · Completo</span></td>
+            </tr>
+            <tr>
+              <td>Registro de ventas de cargas (peso neto, leyes, precio unitario)</td>
+              <td class="center"><span class="tag-si">Sí</span></td>
+              <td class="center"><span class="tag-completo">Sí · Completo</span></td>
+            </tr>
+            <tr>
+              <td>Emisión de recibos de ingreso y comprobantes de venta</td>
+              <td class="center"><span class="tag-si">Sí</span></td>
+              <td class="center"><span class="tag-completo">Sí · Completo</span></td>
+            </tr>
+            <tr>
+              <td>Control de Caja General, Caja Chica y Arqueos de Efectivo</td>
+              <td class="center"><span class="tag-si">Sí</span></td>
+              <td class="center"><span class="tag-completo">Sí · Multi-caja</span></td>
+            </tr>
+            <tr>
+              <td>Registro de trabajadores y liquidación de saldos por avance</td>
+              <td class="center"><span class="tag-si">Sí</span></td>
+              <td class="center"><span class="tag-completo">Sí · Completo</span></td>
+            </tr>
+            <tr>
+              <td>Registro básico de frentes de explotación (bocaminas)</td>
+              <td class="center"><span class="tag-si">Sí</span></td>
+              <td class="center"><span class="tag-completo">Sí · Multi-bocamina</span></td>
+            </tr>
+            <tr>
+              <td><strong>Liquidaciones SENARECOM M-02 Oficial</strong> (Regalías y Maquila)</td>
+              <td class="center"><span class="tag-no">No</span></td>
+              <td class="center"><span class="tag-completo">Sí · Automatizado</span></td>
+            </tr>
+            <tr>
+              <td>Ensayos de Laboratorio Químico (Leyes Ag, Au, Zn, Pb, Sn e Impurezas)</td>
+              <td class="center"><span class="tag-no">No</span></td>
+              <td class="center"><span class="tag-completo">Sí · Integrado</span></td>
+            </tr>
+            <tr>
+              <td>Padrón Oficial de Socios y asignación de % de participación</td>
+              <td class="center"><span class="tag-no">No</span></td>
+              <td class="center"><span class="tag-completo">Sí · Digital</span></td>
+            </tr>
+            <tr>
+              <td>Distribución de Utilidades Netas y Reparto de Dividendos</td>
+              <td class="center"><span class="tag-no">No</span></td>
+              <td class="center"><span class="tag-completo">Sí · Proporcional</span></td>
+            </tr>
+            <tr>
+              <td>Otorgamiento de Préstamos a Socios y planes de pago en cuotas</td>
+              <td class="center"><span class="tag-no">No</span></td>
+              <td class="center"><span class="tag-completo">Sí · Con Descuentos</span></td>
+            </tr>
+            <tr>
+              <td>Módulo de Pagos a Personal, Planillas por Avance y Vales de Anticipo</td>
+              <td class="center"><span class="tag-si">Sí · Básico</span></td>
+              <td class="center"><span class="tag-completo">Sí · Automatizado</span></td>
+            </tr>
+            <tr>
+              <td>Alta Confidencialidad, Seguridad de Datos, Auditoría y Respaldos Automáticos</td>
+              <td class="center"><span class="tag-no">Básica</span></td>
+              <td class="center"><span class="tag-completo">Sí · Máxima Seguridad VIP</span></td>
+            </tr>
+            <tr>
+              <td>Control de Producción y Pesajes en Bocamina (Toneladas extraídas)</td>
+              <td class="center"><span class="tag-no">No</span></td>
+              <td class="center"><span class="tag-completo">Sí · Registro diario</span></td>
+            </tr>
+            <tr>
+              <td>Generación e Impresión de Recibos y Comprobantes (Ventas y Pagos)</td>
+              <td class="center"><span class="tag-no">No</span></td>
+              <td class="center"><span class="tag-completo">Sí · Imprimibles</span></td>
+            </tr>
+            <tr>
+              <td>Plan de Cuentas oficial y Libro Diario Contable (Debe y Haber)</td>
+              <td class="center"><span class="tag-no">No</span></td>
+              <td class="center"><span class="tag-completo">Sí · Automatizado</span></td>
+            </tr>
+            <tr>
+              <td>Dashboard Ejecutivo Global con KPIs y gráficos en tiempo real</td>
+              <td class="center"><span class="tag-no">No</span></td>
+              <td class="center"><span class="tag-completo">Sí · En Vivo</span></td>
+            </tr>
+            <tr>
+              <td>Modalidad de Instalación y Soporte Técnico</td>
+              <td class="center">Local (1 PC)</td>
+              <td class="center"><span class="tag-completo">VPS Cloud / Local + VIP</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="cta-legend">
+        <span><span class="dot-green"></span> Incluido</span>
+        <span><span class="dot-red"></span> No incluido</span>
+        <span><span class="dot-blue"></span> Opción Mejorada incluye todo el paquete Básico</span>
+      </div>
+    </div>
+
+    <!-- nota final -->
+    <div class="note">
+      Propuesta de Cotización · SCP MINERO · 2026 · La Opción Mejorada de Bs. 18.000 incluye el 100% del paquete Básico
+      más todas las herramientas ejecutivas y módulos automatizados.
+    </div>
+
+  </div>
+</body>
+
+</html>

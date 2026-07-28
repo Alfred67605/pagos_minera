@@ -34,6 +34,8 @@ class ReporteController extends Controller
         // Executive Metrics
         $totalToneladasExtraidas = ProduccionMinera::sum('toneladas_estimadas');
         $saldoCajasBs = Caja::sum('saldo_actual');
+        $saldoFondoPersonalBs = Caja::where('tipo', 'caja_chica')->sum('saldo_actual');
+        $saldoFondoOperativoBs = Caja::where('tipo', 'caja_general')->sum('saldo_actual');
         $utilidadNetaEstimada = max(0, $totalIngresos - $totalEgresos);
 
         $recientesAnticipos = Anticipo::with(['trabajador', 'socio'])->orderBy('fecha', 'desc')->take(5)->get();
@@ -89,6 +91,13 @@ class ReporteController extends Controller
             ];
         });
 
+        $cajasPersonal = Caja::where('tipo', 'caja_chica')->get();
+        $startOfWeek = Carbon::now()->startOfWeek();
+        $endOfWeek = Carbon::now()->endOfWeek();
+
+        $pagosSemanaBs = Pago::whereBetween('fecha', [$startOfWeek, $endOfWeek])->sum('neto');
+        $anticiposSemanaBs = Anticipo::whereBetween('fecha', [$startOfWeek, $endOfWeek])->sum('monto');
+
         return view('dashboard', compact(
             'totalTrabajadores',
             'totalSocios',
@@ -100,12 +109,17 @@ class ReporteController extends Controller
             'totalEgresos',
             'totalToneladasExtraidas',
             'saldoCajasBs',
+            'saldoFondoPersonalBs',
+            'saldoFondoOperativoBs',
             'utilidadNetaEstimada',
             'recientesAnticipos',
             'recientesPagos',
             'recientesVentas',
             'produccionBocaminas',
-            'pagosMensuales'
+            'pagosMensuales',
+            'cajasPersonal',
+            'pagosSemanaBs',
+            'anticiposSemanaBs'
         ));
     }
 

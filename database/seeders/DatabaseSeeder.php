@@ -209,7 +209,7 @@ class DatabaseSeeder extends Seeder
             'sueldo_base' => 3200.00,
             'bocamina_id' => $sanjose->id,
             'estado' => 'activo',
-            'observaciones' => 'Encargada de kardex de herramientas y despacho.',
+            'observaciones' => 'Encargada de registro y emisión de vales.',
         ]);
 
         // 5. Compradores de Mineral
@@ -455,18 +455,18 @@ class DatabaseSeeder extends Seeder
         $catMant = CategoriaEgreso::create(['nombre' => 'Mantenimiento y Repuestos', 'descripcion' => 'Repuestos de maquinaria, lubricantes y reparaciones.']);
         $catComb = CategoriaEgreso::create(['nombre' => 'Combustible y Carburantes', 'descripcion' => 'Diésel y gasolina para volquetes y compresoras.']);
         $catAlim = CategoriaEgreso::create(['nombre' => 'Alimentación y Viáticos', 'descripcion' => 'Rancho, insumos alimenticios y viáticos de personal.']);
-        $catExpl = CategoriaEgreso::create(['nombre' => 'Herramientas e Explosivos', 'descripcion' => 'Dinamita, anfo, detonadores y herramientas de mina.']);
+        $catExpl = CategoriaEgreso::create(['nombre' => 'Herramientas e Insumos', 'descripcion' => 'Insumos de mina, EPPs y herramientas de perforación.']);
         $catServ = CategoriaEgreso::create(['nombre' => 'Servicios e Impuestos', 'descripcion' => 'Energía eléctrica, agua, telefonía y patentes.']);
 
-        // Egreso 1: Explosivos
+        // Egreso 1: Herramientas e Insumos
         $e1 = Egreso::create([
             'caja_id' => $cajaGen->id,
             'categoria_id' => $catExpl->id,
             'monto' => 12500.00,
-            'concepto' => 'Adquisición de dinamita, anfo y guía fusible para voladuras',
+            'concepto' => 'Adquisición de herramientas de perforación, barrenos y EPPs',
             'fecha' => Carbon::today()->subDays(25)->toDateString(),
             'comprobante_numero' => 'FAC-7819',
-            'proveedor' => 'Explosivos de Bolivia S.A.',
+            'proveedor' => 'Insumos Mineros Bolivia S.R.L.',
             'user_id' => $admin->id,
         ]);
         $cajaGen->saldo_actual -= 12500.00;
@@ -476,7 +476,7 @@ class DatabaseSeeder extends Seeder
             'caja_id' => $cajaGen->id,
             'tipo' => 'egreso',
             'monto' => 12500.00,
-            'concepto' => 'Egreso: Adquisición de dinamita, anfo y guía fusible',
+            'concepto' => 'Egreso: Adquisición de herramientas de perforación y EPPs',
             'categoria' => $catExpl->nombre,
             'referencia_tipo' => 'egreso',
             'fecha' => Carbon::today()->subDays(25)->toDateString(),
@@ -763,7 +763,7 @@ class DatabaseSeeder extends Seeder
             'saldo_pendiente' => 8000.00,
             'fecha_otorgamiento' => Carbon::today()->subDays(15)->toDateString(),
             'estado' => 'activo',
-            'observaciones' => 'Financiamiento de insumos de explosivos.',
+            'observaciones' => 'Financiamiento de herramientas e insumos de mina.',
             'user_id' => $admin->id,
         ]);
 

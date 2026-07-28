@@ -63,6 +63,7 @@ class AnticipoController extends Controller
             'fecha' => 'required|date',
             'monto' => 'required|numeric|min:0.01',
             'motivo' => 'nullable|string|max:255',
+            'caja_id' => 'nullable|exists:cajas,id',
         ], [
             'trabajador_id.required_if' => 'Debe seleccionar un trabajador.',
             'socio_id.required_if' => 'Debe seleccionar un socio.',
@@ -79,9 +80,35 @@ class AnticipoController extends Controller
             $data['trabajador_id'] = null;
         }
 
-        Anticipo::create($data);
+        // Assign default Fondo Personal caja if not selected
+        $caja = !empty($data['caja_id']) ? \App\Models\Caja::find($data['caja_id']) : \App\Models\Caja::getFondoPersonal();
+        if ($caja) {
+            $data['caja_id'] = $caja->id;
+        }
 
-        return redirect()->route('anticipos.index')->with('success', 'Anticipo registrado exitosamente.');
+        \Illuminate\Support\Facades\DB::transaction(function() use ($data, $caja) {
+            $anticipo = Anticipo::create($data);
+
+            if ($caja && $caja->estado === 'abierta') {
+                $nombreReceptor = $anticipo->trabajador ? $anticipo->trabajador->nombre : ($anticipo->socio ? $anticipo->socio->nombre : 'Personal');
+                \App\Models\CajaMovimiento::create([
+                    'caja_id' => $caja->id,
+                    'tipo' => 'egreso',
+                    'monto' => $anticipo->monto,
+                    'concepto' => "Anticipo a {$nombreReceptor} - {$anticipo->motivo}",
+                    'categoria' => 'Anticipo Personal',
+                    'referencia_tipo' => 'anticipo',
+                    'referencia_id' => $anticipo->id,
+                    'fecha' => $anticipo->fecha,
+                    'user_id' => Auth::id(),
+                ]);
+
+                $caja->saldo_actual -= $anticipo->monto;
+                $caja->save();
+            }
+        });
+
+        return redirect()->route('anticipos.index')->with('success', 'Anticipo registrado y descontado del fondo de caja exitosamente.');
     }
 
     public function update(Request $request, Anticipo $anticipo)

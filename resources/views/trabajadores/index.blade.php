@@ -65,12 +65,19 @@
     <!-- Header -->
     <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
         <div>
-            <h1 class="text-3xl font-extrabold tracking-tight text-slate-100">Personal y Trabajadores</h1>
-            <p class="text-sm text-slate-300 mt-1">Administra a los trabajadores de bocamina, serenos, choferes y personal administrativo.</p>
+            <h1 class="text-3xl font-extrabold tracking-tight text-slate-100 flex items-center gap-3">
+                <i class="fa-solid fa-user-group text-rose-400"></i> Registro de Personal & Contratistas
+            </h1>
+            <p class="text-sm text-slate-300 mt-1">Base de datos unificada: Contratistas y Choferes (Pago Semanal) vs Serenos de Mina y Personal Fijo (Pago Mensual).</p>
         </div>
-        <button @click="openCreate()" class="btn-vibrant-cyan inline-flex items-center justify-center px-4 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-cyan-500/20 self-start">
-            <i class="fa-solid fa-user-plus mr-2"></i> Registrar Personal
-        </button>
+        <div class="flex flex-wrap items-center gap-2.5 self-start">
+            <a href="{{ route('pagos.create', ['cargo' => request('cargo')]) }}" class="bg-rose-500 hover:bg-rose-400 text-white inline-flex items-center justify-center px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider shadow-lg shadow-rose-500/20 hover:scale-105 transition-all">
+                <i class="fa-solid fa-calculator mr-2"></i> Pagar a este Grupo
+            </a>
+            <button @click="openCreate()" class="btn-vibrant-cyan inline-flex items-center justify-center px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider shadow-lg shadow-cyan-500/20 hover:scale-105 transition-all">
+                <i class="fa-solid fa-user-plus mr-2"></i> Registrar Nuevo Personal
+            </button>
+        </div>
     </div>
 
     <!-- Filters Section -->
@@ -167,10 +174,14 @@
                                 </span>
                             </td>
                             <td class="px-6 py-4">
-                                @if($trabajador->modalidad_pago === 'sueldo_fijo')
-                                    <span class="text-xs font-semibold text-emerald-400">Sueldo Fijo: Bs. {{ number_format($trabajador->sueldo_base, 2) }}</span>
+                                @if($trabajador->cargo === 'sereno' || $trabajador->cargo === 'personal_admin' || $trabajador->modalidad_pago === 'sueldo_fijo')
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-indigo-500/10 text-indigo-400 border border-indigo-500/30">
+                                        🗓️ Mensual: Bs. {{ number_format($trabajador->sueldo_base, 2) }}
+                                    </span>
                                 @else
-                                    <span class="text-xs font-semibold text-amber-400">Por Producción / Contrato</span>
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-amber-500/10 text-amber-400 border border-amber-500/30">
+                                        ⚡ Semanal (Sacos / Volquetas / Metros)
+                                    </span>
                                 @endif
                             </td>
                             <td class="px-6 py-4">
@@ -184,7 +195,10 @@
                                 </span>
                             </td>
                             <td class="px-6 py-4 no-print">
-                                <div class="flex space-x-2">
+                                <div class="flex items-center space-x-2">
+                                    <a href="{{ route('trabajadores.show', $trabajador->id) }}" class="px-2.5 py-1.5 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/40 transition-all duration-300 hover:scale-105 active:scale-95 shadow-sm flex items-center gap-1.5 text-xs font-bold" title="Ver Kardex Digital e Historial">
+                                        <i class="fa-solid fa-address-card text-xs"></i> Kardex
+                                    </a>
                                     <button @click="openEdit({{ $trabajador }})" class="p-2 rounded-lg bg-slate-800/80 hover:bg-amber-500/20 text-slate-300 hover:text-amber-400 border border-slate-700/60 hover:border-amber-500/40 transition-all duration-300 hover:scale-105 active:scale-95 shadow-sm" title="Editar">
                                         <i class="fa-solid fa-pen-to-square text-xs"></i>
                                     </button>
@@ -271,11 +285,14 @@
                         </div>
 
                         <div>
-                            <label for="modal_modalidad_pago" class="block text-sm font-medium text-slate-300">Modalidad de Pago</label>
+                            <label for="modal_modalidad_pago" class="block text-sm font-medium text-slate-300">Tipo de Contrato / Modalidad</label>
                             <select id="modal_modalidad_pago" name="modalidad_pago" required x-model="modalidad_pago"
-                                    class="mt-1 block w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500 focus:border-amber-500 text-sm">
-                                <option value="por_produccion">Por Producción / Contrato</option>
-                                <option value="sueldo_fijo">Sueldo Fijo Mensual</option>
+                                    class="mt-1 block w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-slate-100 focus:outline-none focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500 text-sm font-semibold">
+                                <option value="por_produccion">📦 Por Sacos Extraídos (Semanal)</option>
+                                <option value="por_toneladas">⚖️ Por Toneladas / Cargas (Semanal)</option>
+                                <option value="por_metros">📏 Por Avance de Metros (Semanal)</option>
+                                <option value="por_viaje">🚛 Por Viajes / Fletes Diarios (Chofer)</option>
+                                <option value="sueldo_fijo">🗓️ Sueldo Fijo Mensual (Sereno/Admin)</option>
                             </select>
                         </div>
                     </div>

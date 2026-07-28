@@ -4,7 +4,7 @@
 
 El **Sistema de Control de Pagos Mineros (SCPM)** es una plataforma web integral desarrollada con **Laravel 11, PostgreSQL, TailwindCSS y Alpine.js**, diseñada específicamente para la gestión operativa, financiera, de comercialización y tributaria de empresas y cooperativas mineras en Bolivia.
 
-El sistema digitaliza y automatiza el ciclo completo de la cadena de valor minera: desde la producción en bocamina, pesajes en balanza, ensayos químicos de laboratorio, comerciales de mineral con Formulario SENARECOM M-02, control de inventario de explosivos y insumos, flota de maquinaria, despachos de combustible, tesorería de cajas y bancos, hasta la contabilidad general en Libro Diario y reparto de utilidades a socios.
+El sistema digitaliza y automatiza el ciclo completo de la cadena de valor minera: desde la producción en bocamina, pesajes en balanza, ensayos químicos de laboratorio, comerciales de mineral con Formulario SENARECOM M-02, emisión e impresión de recibos y comprobantes, tesorería de cajas y bancos, hasta la contabilidad general en Libro Diario y reparto de utilidades a socios.
 
 ---
 
@@ -27,11 +27,11 @@ El sistema digitaliza y automatiza el ciclo completo de la cadena de valor miner
    * **Generación de Formulario M-02 Imprimible** oficial con firmas de conformidad.
    * Integración directa con las Ventas de Cargas y los Ingresos Económicos.
 
-### 🔹 Fase 3: Inventario, Combustible, Maquinaria y Producción (COMPLETADA)
-1. **Almacén e Inventarios Mineros (`articulos`, `movimientos_inventario`)**: Control de explosivos (dinamita, anfo, mecha, detonadores), herramientas, EPPs y reactivos. Kardex de entradas/salidas y **alertas de bajo stock**.
-2. **Control de Combustible (`tanques_combustible`, `despachos_combustible`)**: Registro de cisternas/tanques de diésel y gasolina, vales de despacho por vehículo o equipo con kilometraje/horómetro.
-3. **Maquinaria & Equipos Pesados (`maquinarias`, `mantenimientos_maquinaria`)**: Ficha técnica de equipos (compresoras, volquetes, cargadores, jumbos, perforadoras), horómetros acumulados e historial de mantenimientos preventivos y correctivos.
-4. **Producción Minera Diaria (`producciones_mineras`)**: Control diario del volumen de cargas extraídas y tonelaje estimado por bocamina y sector veta.
+### 🔹 Fase 3: Producción Minera, Recibos y Descuentos por Avance (COMPLETADA)
+1. **Producción Minera Diaria (`producciones_mineras`)**: Control diario del volumen de cargas extraídas, humedad, ley estimada y tonelaje neto por bocamina.
+2. **Generación e Impresión de Recibos (`anticipos`, `ventas_cargas`)**: Emisión de recibos de venta de cargas, vales de anticipos y comprobantes oficiales de pago con firma de conformidad.
+3. **Control de Frentes de Explotación & Bocaminas (`bocaminas`)**: Registro de sectores de trabajo, bocaminas asignadas y trazabilidad por cuadrilla o trabajador.
+4. **Registro y Asignación de Contratos (`contratos`)**: Configuración de modalidades de trabajo (avance por metro, tonelada o sueldo fijo) con cálculo automático de saldos líquidamente pagables.
 
 ### 🔹 Fase 4: Contabilidad, Utilidades, Préstamos y Dashboard Ejecutivo (COMPLETADA)
 1. **Préstamos & Créditos (`prestamos`, `cuotas_prestamo`)**: Otorgamiento de préstamos corporativos a socios o cuadrillas de trabajadores, tabla de amortización en cuotas y cobranza programada.
@@ -47,7 +47,7 @@ El sistema digitaliza y automatiza el ciclo completo de la cadena de valor miner
 * **Base de Datos**: PostgreSQL / SQLite (Migraciones y Seeders 100% compatibles)
 * **Frontend Design**: TailwindCSS v3 con estética *Modern Glassmorphism* (Modo Oscuro, partículas en canvas, colores HSL armonizados y tipografía Inter).
 * **Componentes Reactivos**: Alpine.js para modales, calculadoras en tiempo real y componentes interactivos sin recargas.
-* **Seguridad y Permisos**: Middleware `auth` con hashing `Bcrypt` para contraseñas de usuarios.
+* **Seguridad & Confidencialidad**: Encriptación de contraseñas con hashing `Bcrypt`, middleware `auth`, control de acceso por roles, auditoría de transacciones y copias de seguridad automáticas para máxima protección de la información financiera.
 
 ---
 

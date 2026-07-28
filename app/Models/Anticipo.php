@@ -15,6 +15,7 @@ class Anticipo extends Model
         'saldo',
         'pagado',
         'motivo',
+        'caja_id',
         'user_id',
     ];
 
@@ -22,6 +23,11 @@ class Anticipo extends Model
         'pagado' => 'boolean',
         'fecha' => 'date',
     ];
+
+    public function caja()
+    {
+        return $this->belongsTo(Caja::class, 'caja_id');
+    }
 
     public function trabajador()
     {

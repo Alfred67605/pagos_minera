@@ -38,6 +38,30 @@ class TrabajadorController extends Controller
         return view('trabajadores.index', compact('trabajadores', 'bocaminas'));
     }
 
+    public function show(Trabajador $trabajador)
+    {
+        $trabajador->load([
+            'bocamina',
+            'contratos' => function($q) { $q->orderBy('created_at', 'desc'); },
+            'trabajos' => function($q) { $q->orderBy('fecha', 'desc'); },
+            'anticipos' => function($q) { $q->orderBy('fecha', 'desc'); },
+            'pagos' => function($q) { $q->orderBy('fecha', 'desc'); }
+        ]);
+
+        $totalGanado = $trabajador->trabajos->sum('subtotal') + $trabajador->pagos->sum('bruto');
+        $totalAnticipos = $trabajador->anticipos->sum('monto');
+        $totalLiquidoCobrado = $trabajador->pagos->sum('neto');
+        $anticiposPendientes = $trabajador->anticipos->sum('saldo');
+
+        return view('trabajadores.show', compact(
+            'trabajador',
+            'totalGanado',
+            'totalAnticipos',
+            'totalLiquidoCobrado',
+            'anticiposPendientes'
+        ));
+    }
+
     public function store(Request $request)
     {
         $data = $request->validate([

@@ -44,8 +44,8 @@ Route::middleware('auth')->group(function () {
     // Bocaminas
     Route::resource('bocaminas', BocaminaController::class)->only(['index', 'store', 'update', 'destroy']);
 
-    // Trabajadores / Personal
-    Route::resource('trabajadores', TrabajadorController::class)->only(['index', 'store', 'update', 'destroy']);
+    // Trabajadores / Personal & Kardex Digital
+    Route::resource('trabajadores', TrabajadorController::class)->only(['index', 'store', 'show', 'update', 'destroy']);
 
     // Contratos
     Route::resource('contratos', ContratoController::class);
@@ -76,6 +76,7 @@ Route::middleware('auth')->group(function () {
     // Caja General & Arqueos
     Route::resource('cajas', CajaController::class)->only(['index', 'store', 'show', 'destroy']);
     Route::post('/cajas/{caja}/movimientos', [CajaController::class, 'registrarMovimiento'])->name('cajas.movimientos.store');
+    Route::post('/cajas/{caja}/recargar', [CajaController::class, 'recargar'])->name('cajas.recargar');
     Route::post('/cajas/{caja}/toggle-estado', [CajaController::class, 'toggleEstado'])->name('cajas.toggle-estado');
 
     // Egresos & Gastos Operativos

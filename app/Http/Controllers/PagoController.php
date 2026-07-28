@@ -21,7 +21,9 @@ class PagoController extends Controller
     {
         $trabajadores = Trabajador::with('bocamina')->where('estado', 'activo')->get();
         $bocaminas = \App\Models\Bocamina::all();
-        return view('pagos.create', compact('trabajadores', 'bocaminas'));
+        $cajas = \App\Models\Caja::where('estado', 'abierta')->get();
+        $pagos = Pago::with('trabajador.bocamina')->orderBy('fecha', 'desc')->get();
+        return view('pagos.create', compact('trabajadores', 'bocaminas', 'cajas', 'pagos'));
     }
 
     public function getTrabajadorData($id)
@@ -175,6 +177,10 @@ class PagoController extends Controller
                 ]);
             }
 
+            // Resolve Caja
+            $cajaId = $request->input('caja_id');
+            $caja = !empty($cajaId) ? \App\Models\Caja::find($cajaId) : \App\Models\Caja::getFondoPersonal();
+
             // Create Pago record
             $pago = Pago::create([
                 'trabajador_id' => $trabajadorId,
@@ -191,7 +197,27 @@ class PagoController extends Controller
                 'observacion' => $request->observacion,
                 'metodo_pago' => $request->input('metodo_pago', 'efectivo'),
                 'entregado_por' => $request->input('entregado_por') ?: (auth()->user()->name ?? 'Administración TORMAN'),
+                'caja_id' => $caja ? $caja->id : null,
             ]);
+
+            // Deduct cash from caja if money was disbursed
+            if ($caja && $actualMontoPagado > 0 && $caja->estado === 'abierta') {
+                $trabajador = Trabajador::find($trabajadorId);
+                \App\Models\CajaMovimiento::create([
+                    'caja_id' => $caja->id,
+                    'tipo' => 'egreso',
+                    'monto' => $actualMontoPagado,
+                    'concepto' => "Pago de Planilla Semanal a {$trabajador->nombre}",
+                    'categoria' => 'Pago Personal',
+                    'referencia_tipo' => 'pago_planilla',
+                    'referencia_id' => $pago->id,
+                    'fecha' => $pago->fecha,
+                    'user_id' => auth()->id(),
+                ]);
+
+                $caja->saldo_actual -= $actualMontoPagado;
+                $caja->save();
+            }
 
             // Mark previous week pending balances as liquidated
             if ($totalSaldosPrev > 0) {

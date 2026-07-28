@@ -12,10 +12,15 @@
     socio_id: '',
     bocamina_id: '',
     tipo_mineral: 'Complejo (Zn-Pb-Ag)',
+    presentacion: 'saco',
     cantidad: '',
+    peso_bruto: '',
+    tara: '',
     peso_neto: '',
+    ley_mineral: '',
     precio_unitario: '',
     comprador: '',
+    caja_id: '',
     observaciones: '',
     editActionUrl: '',
 
@@ -33,10 +38,15 @@
         this.socio_id = '';
         this.bocamina_id = '';
         this.tipo_mineral = 'Complejo (Zn-Pb-Ag)';
+        this.presentacion = 'saco';
         this.cantidad = '';
+        this.peso_bruto = '';
+        this.tara = '';
         this.peso_neto = '';
+        this.ley_mineral = '';
         this.precio_unitario = '';
         this.comprador = '';
+        this.caja_id = '';
         this.observaciones = '';
         this.openModal = true;
     },
@@ -48,10 +58,15 @@
         this.socio_id = venta.socio_id;
         this.bocamina_id = venta.bocamina_id;
         this.tipo_mineral = venta.tipo_mineral;
+        this.presentacion = venta.presentacion || 'saco';
         this.cantidad = venta.cantidad || '';
+        this.peso_bruto = venta.peso_bruto || '';
+        this.tara = venta.tara || '';
         this.peso_neto = venta.peso_neto;
+        this.ley_mineral = venta.ley_mineral || '';
         this.precio_unitario = venta.precio_unitario;
         this.comprador = venta.comprador;
+        this.caja_id = venta.caja_id || '';
         this.observaciones = venta.observaciones || '';
         this.editActionUrl = '/ventas-cargas/' + venta.id;
         this.openModal = true;
@@ -254,7 +269,17 @@
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label for="modal_tipo_mineral" class="block text-sm font-medium text-slate-300">Tipo de Mineral</label>
+                            <label for="modal_presentacion" class="block text-sm font-medium text-slate-300">Presentación / Formato *</label>
+                            <select id="modal_presentacion" name="presentacion" required x-model="presentacion"
+                                    class="mt-1 block w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500 focus:border-amber-500 text-sm font-bold text-amber-400">
+                                <option value="saco">📦 Sacos / Cargas</option>
+                                <option value="volqueta">🚛 Volqueta de Mineral</option>
+                                <option value="concentrado">🏭 Concentrado Procesado</option>
+                                <option value="bruto">🪨 Mineral Bruto</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="modal_tipo_mineral" class="block text-sm font-medium text-slate-300">Tipo de Mineral *</label>
                             <select id="modal_tipo_mineral" name="tipo_mineral" required x-model="tipo_mineral"
                                     class="mt-1 block w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500 focus:border-amber-500 text-sm">
                                 @foreach($minerales as $m)
@@ -262,26 +287,52 @@
                                 @endforeach
                             </select>
                         </div>
+                    </div>
+
+                    <!-- Ficha de Pesajes y Ley -->
+                    <div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-800 space-y-3">
+                        <span class="text-xs font-bold uppercase tracking-wider text-amber-500 block flex items-center gap-1.5">
+                            <i class="fa-solid fa-scale-balanced"></i> Pesaje y Calidad de Carga
+                        </span>
+
+                        <div class="grid grid-cols-3 gap-3">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Peso Bruto (Tn)</label>
+                                <input type="number" step="0.01" min="0" name="peso_bruto" x-model="peso_bruto" @input="if(peso_bruto && tara) peso_neto = (parseFloat(peso_bruto) - parseFloat(tara)).toFixed(2)" placeholder="0.00" class="w-full py-1.5 px-2 bg-slate-950 border border-slate-700 rounded text-xs font-mono">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Tara (Tn)</label>
+                                <input type="number" step="0.01" min="0" name="tara" x-model="tara" @input="if(peso_bruto && tara) peso_neto = (parseFloat(peso_bruto) - parseFloat(tara)).toFixed(2)" placeholder="0.00" class="w-full py-1.5 px-2 bg-slate-950 border border-slate-700 rounded text-xs font-mono">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Peso Neto (Tn) *</label>
+                                <input id="modal_peso_neto" name="peso_neto" type="number" step="0.01" min="0.01" required x-model="peso_neto"
+                                       class="w-full py-1.5 px-2 bg-slate-950 border border-slate-700 rounded text-xs font-mono font-bold text-amber-400"
+                                       placeholder="Ej. 15.50">
+                            </div>
+                        </div>
+
                         <div>
-                            <label for="modal_cantidad" class="block text-sm font-medium text-slate-300">Cantidad Sacos / Bazas (Opcional)</label>
-                            <input id="modal_cantidad" name="cantidad" type="number" x-model="cantidad"
-                                   class="mt-1 block w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500 focus:border-amber-500 text-sm font-mono"
-                                   placeholder="Ej. 120">
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Ley del Mineral (% / DM Ag / g/t Au)</label>
+                            <input type="text" name="ley_mineral" x-model="ley_mineral" placeholder="Ej: 45% Pb, 120 DM Ag" class="w-full py-1.5 px-2 bg-slate-950 border border-slate-700 rounded text-xs">
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label for="modal_peso_neto" class="block text-sm font-medium text-slate-300">Peso Neto (Toneladas)</label>
-                            <input id="modal_peso_neto" name="peso_neto" type="number" step="0.01" min="0.01" required x-model="peso_neto"
-                                   class="mt-1 block w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500 focus:border-amber-500 text-sm font-mono"
-                                   placeholder="Ej. 15.50">
-                        </div>
-                        <div>
                             <label for="modal_precio_unitario" class="block text-sm font-medium text-slate-300">Precio Unitario por Tn (Bs.)</label>
                             <input id="modal_precio_unitario" name="precio_unitario" type="number" step="0.01" min="0.01" required x-model="precio_unitario"
                                    class="mt-1 block w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500 focus:border-amber-500 text-sm font-mono"
                                    placeholder="Ej. 3200.00">
+                        </div>
+                        <div>
+                            <label for="modal_caja_id" class="block text-sm font-medium text-slate-300">Acreditar a Caja *</label>
+                            <select id="modal_caja_id" name="caja_id" x-model="caja_id"
+                                    class="mt-1 block w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-500 focus:border-amber-500 text-sm font-bold text-emerald-400">
+                                @foreach($cajas as $caja)
+                                    <option value="{{ $caja->id }}">{{ $caja->nombre }} (Saldo: Bs. {{ number_format($caja->saldo_actual, 2) }})</option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
 

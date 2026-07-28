@@ -33,7 +33,7 @@
 ### 🔴 3. Módulo de Egresos y Gastos
 - **Pagos y Recibos a Personal**: Asistente de liquidación salarial por avance de metro, volquetas o sueldo fijo con bonos, descuentos y amortización automática de anticipos.
 - **Anticipos & Adelantos**: Otorgamiento y seguimiento de saldos pendientes de adelantos a trabajadores y socios.
-- **Egresos y Gastos Operativos**: Control de compras de insumos (explosivos, dinamita, diésel oil, repuestos, herramientas y servicios) clasificados por categoría.
+- **Egresos y Gastos Operativos**: Control de compras de insumos (herramientas, repuestos, alimentos, mantenimiento y servicios) clasificados por categoría.
 - **Caja General y Cajas Chicas**: Control de saldos en efectivo, arqueos y libro de movimientos de caja.
 
 ### ⚙️ 4. Módulo de Administración
@@ -61,7 +61,7 @@ El proyecto cuenta con un **DatabaseSeeder completo y autosuficiente** (`Databas
 - **4 Compradores de Mineral**: *Vinto S.A., Baremsa Ltda., San Cristóbal S.A., Minerales del Sur*.
 - **4 Ventas de Mineral**: *Transacciones de cargas por un total superior a Bs. 350,000*.
 - **2 Cajas Operativas**: *Caja General Central (Bs. 150,000) y Caja Chica Mina (Bs. 25,000)*.
-- **3 Egresos Operativos**: *Facturas de explosivos, diésel oil y repuestos industrial el minero*.
+- **3 Egresos Operativos**: *Facturas de mantenimiento, repuestos e insumos industriales del minero*.
 - **5 Registros Diarios de Producción Minera**.
 - **2 Préstamos a Socios** con tablas de amortización de cuotas.
 - **1 Distribución de Utilidades** repartida entre los socios.

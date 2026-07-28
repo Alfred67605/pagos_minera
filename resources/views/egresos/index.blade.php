@@ -150,7 +150,7 @@
                 </button>
             </div>
 
-            <form action="{{ route('egresos.store') }}" method="POST" class="p-6 space-y-4">
+            <form action="{{ route('egresos.store') }}" method="POST" class="p-6 space-y-4" x-data="{ pesoBruto: 0, tara: 0, get pesoNeto() { return (parseFloat(this.pesoBruto) || 0) > (parseFloat(this.tara) || 0) ? ((parseFloat(this.pesoBruto) || 0) - (parseFloat(this.tara) || 0)).toFixed(2) : 0 } }">
                 @csrf
                 
                 <div class="grid grid-cols-2 gap-4">
@@ -178,9 +178,57 @@
                     </select>
                 </div>
 
+                <!-- FICHA TÉCNICA MINERA DE COMPRA -->
+                <div class="bg-slate-900/80 p-3.5 rounded-xl border border-slate-800 space-y-3">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-amber-500 block flex items-center gap-1.5">
+                        <i class="fa-solid fa-truck-ramp-box"></i> Ficha Técnica Minera (Si aplica a Mineral)
+                    </span>
+                    
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Presentación / Formato</label>
+                            <select name="presentacion" class="w-full py-2 text-xs">
+                                <option value="saco">📦 Sacos / Cargas</option>
+                                <option value="volqueta">🚛 Volqueta de Mineral</option>
+                                <option value="concentrado">🏭 Concentrado Procesado</option>
+                                <option value="bruto">🪨 Mineral Bruto</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Bocamina Origen</label>
+                            <select name="bocamina_id" class="w-full py-2 text-xs">
+                                <option value="">-- Ninguna / Compra Externa --</option>
+                                @foreach($bocaminas as $boc)
+                                    <option value="{{ $boc->id }}">{{ $boc->nombre }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-3">
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Peso Bruto (Tn/Kg)</label>
+                            <input type="number" step="0.01" min="0" name="peso_bruto" x-model="pesoBruto" placeholder="0.00" class="w-full py-2 text-xs font-mono">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Tara / Descuento</label>
+                            <input type="number" step="0.01" min="0" name="tara" x-model="tara" placeholder="0.00" class="w-full py-2 text-xs font-mono">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Peso Neto</label>
+                            <input type="number" step="0.01" min="0" name="peso_neto" :value="pesoNeto" readonly class="w-full py-2 text-xs font-mono font-bold text-amber-400 bg-slate-950">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Ley del Mineral (% Pb, Zn / DM Ag / g/t Au)</label>
+                        <input type="text" name="ley_mineral" placeholder="Ej: 45% Pb, 120 DM Ag" class="w-full py-2 text-xs">
+                    </div>
+                </div>
+
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Monto (Bs.) *</label>
+                        <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Monto Total (Bs.) *</label>
                         <input type="number" step="0.01" min="0.01" name="monto" required placeholder="0.00" class="w-full py-2.5 text-sm font-mono text-rose-400 font-bold">
                     </div>
                     <div>
@@ -191,12 +239,12 @@
 
                 <div>
                     <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Concepto / Motivo *</label>
-                    <input type="text" name="concepto" required placeholder="Ej: Compra de repuestos de perforadora y brocas" class="w-full py-2.5 text-sm">
+                    <input type="text" name="concepto" required placeholder="Ej: Compra de 1 Volqueta de Mineral" class="w-full py-2.5 text-sm">
                 </div>
 
                 <div>
                     <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Proveedor / Beneficiario</label>
-                    <input type="text" name="proveedor" placeholder="Ej: Ferretería Industrial SRL" class="w-full py-2.5 text-sm">
+                    <input type="text" name="proveedor" placeholder="Ej: Cooperativa Minera / Bocamina Central" class="w-full py-2.5 text-sm">
                 </div>
 
                 <div>
